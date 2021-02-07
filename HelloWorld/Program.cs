@@ -46,8 +46,11 @@ namespace HelloWorld
         {
             using CudaContext ctx = new CudaContext(deviceID);
             CudaKernel kernel = ctx.LoadKernel("kernel.ptx", "VecAdd");
-            kernel.GridDimensions = (N + 255) / 256;
-            kernel.BlockDimensions = 256;
+
+            var blockDimensions = 256;
+
+            kernel.GridDimensions = (N + 255) / blockDimensions;
+            kernel.BlockDimensions = blockDimensions;
 
             // Allocate input vectors h_A and h_B in host memory
             var (h_A, h_B) = InitArrays(N);
@@ -66,7 +69,7 @@ namespace HelloWorld
 
             // Copy result from device memory to host memory
             // h_C contains the result in host memory
-            //float[] h_C = d_C;
+            float[] h_C = d_C;
         }
 
         private static (float[] h_A, float[] h_B) InitArrays(int N)
@@ -76,7 +79,7 @@ namespace HelloWorld
             for (int i = 0; i < N; i++)
             {
                 h_A[i] = 1;
-                h_B[i] = 2;
+                h_B[i] = 5;
             }
 
             return (h_A, h_B);
