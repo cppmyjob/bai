@@ -1,0 +1,2 @@
+﻿CUDA determining threads per block, blocks per grid
+https://stackoverflow.com/questions/4391162/cuda-determining-threads-per-block-blocks-per-grid
