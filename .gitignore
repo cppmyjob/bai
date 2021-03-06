@@ -10,3 +10,4 @@
 /packages
 x64/
 
+*.user
