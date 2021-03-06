@@ -1,7 +1,7 @@
 ﻿using System;
 using ManagedCuda;
 
-namespace Grid
+namespace Neuron
 {
     class Program
     {
@@ -10,15 +10,7 @@ namespace Grid
             Console.WriteLine("Grid tests!");
 
             int N = 2048;
-
-            var deviceCount = CudaContext.GetDeviceCount();
-
-            for (int i = 0; i < deviceCount; i++)
-            {
-                var properties = CudaContext.GetDeviceInfo(i);
-                Console.WriteLine($"GPU {properties.DeviceName}");
-                GpuGridTests(N, i);
-            }
+            var deviceID = 0;
 
             Console.ReadKey();
         }
