@@ -1,11 +1,9 @@
-﻿using Bai.Intelligence.Definition.Genes;
+﻿using Bai.Intelligence.Definition.Dna.Genes;
 
 namespace Bai.Intelligence.Definition.Dna
 {
     public class NeuronDna
     {
-        public NeuronDefinitionGene[] Genes { get; set; }
-
-        
+        public BaseGene[] Genes { get; set; }
     }
 }
