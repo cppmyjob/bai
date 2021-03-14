@@ -22,6 +22,8 @@ namespace Bai.Intelligence.Cpu
             buildRuntimeContext.RuntimeCycles = runtime.Cycles;
             AddCycles(definition, buildRuntimeContext);
 
+            runtime.TempMemory = new float[buildRuntimeContext.TempMemoryIndex];
+
             return runtime;
         }
 

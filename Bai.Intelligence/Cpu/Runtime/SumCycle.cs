@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Bai.Intelligence.Cpu.Runtime
@@ -22,7 +23,11 @@ namespace Bai.Intelligence.Cpu.Runtime
 
         public override void Compute(float[] memory, float[] tempMemory)
         {
-            throw new NotImplementedException();
+            foreach (var item in Items)
+            {
+                var sum = item.Indexes.Sum(t => tempMemory[t]);
+                tempMemory[item.ResultIndex] = sum;
+            }
         }
     }
 }

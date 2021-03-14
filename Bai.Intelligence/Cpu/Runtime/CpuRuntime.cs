@@ -16,10 +16,13 @@ namespace Bai.Intelligence.Cpu.Runtime
 
         }
 
-
         public float[] Compute(float[] input)
         {
-            throw new NotImplementedException();
+            foreach (var cycle in Cycles)
+            {
+                cycle.Compute(Memory, TempMemory);
+            }
+            return null;
         }
     }
 }

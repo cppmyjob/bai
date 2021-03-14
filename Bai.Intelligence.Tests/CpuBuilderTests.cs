@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Bai.Intelligence.Cpu;
 using Bai.Intelligence.Cpu.Runtime;
+using Bai.Intelligence.Function;
 using Bai.Intelligence.Tests.Infrastructure;
 using NUnit.Framework;
 
@@ -31,6 +32,7 @@ namespace Bai.Intelligence.Tests
 
             // ASSERT
             Assert.AreEqual(4, runtime.Memory.Length);
+            Assert.AreEqual(4, runtime.TempMemory.Length);
         }
 
         [Test]
@@ -131,6 +133,28 @@ namespace Bai.Intelligence.Tests
         }
 
 
+        [Test]
+        public void FunctionCycleShouldHaveCorrectValues()
+        {
+            // ARRANGE
+            var definition = _env.CreateSimpleNeuron();
 
+            // ACT
+            var builder = new CpuBuilder();
+            var runtime = (CpuRuntime)builder.Build(definition);
+
+            // ASSERT
+            var cycle = (FunctionCycle)runtime.Cycles[2];
+
+            Assert.AreEqual(1, cycle.Items.Count);
+            var item = cycle.Items[0];
+
+            Assert.AreEqual(3, item.InputValueIndex);
+            Assert.AreEqual(3, item.OutputIndex);
+
+            Assert.IsInstanceOf(typeof(SigmoidFunction), item.Function);
+            var function = (SigmoidFunction) item.Function;
+            Assert.AreEqual(4.4, function.Alfa, 0.00001);
+        }
     }
 }

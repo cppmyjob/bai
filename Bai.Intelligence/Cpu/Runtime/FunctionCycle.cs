@@ -23,7 +23,10 @@ namespace Bai.Intelligence.Cpu.Runtime
 
         public override void Compute(float[] memory, float[] tempMemory)
         {
-            throw new NotImplementedException();
+            foreach (var item in Items)
+            {
+                tempMemory[item.OutputIndex] = item.Function.Compute(tempMemory[item.InputValueIndex]);
+            }
         }
     }
 }

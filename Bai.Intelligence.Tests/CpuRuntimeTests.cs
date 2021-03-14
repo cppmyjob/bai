@@ -14,21 +14,21 @@ namespace Bai.Intelligence.Tests
             _env = new TestEnvBase();
         }
 
-        //[Test]
-        //public void ShouldCalculateSimpleNeuron()
-        //{
-        //    // ARRANGE
-        //    var definition = _env.CreateSimpleNeuron();
+        [Test]
+        public void ShouldCalculateSimpleNeuron()
+        {
+            // ARRANGE
+            var definition = _env.CreateSimpleNeuron();
+            var builder = new CpuBuilder();
+            var runtime = builder.Build(definition);
 
-        //    // ACT
-        //    var builder = new CpuBuilder();
-        //    var runtime = builder.Build(definition);
+            // ACT
 
-        //    var result = runtime.Compute(new[] {10F, 10F, 30F });
+            var result = runtime.Compute(new[] { 10F, 10F, 30F });
 
-        //    // ASSERT
-        //    Assert.AreEqual(1, result.Length);
-        //    Assert.AreEqual(2.222, result[0]);
-        //}
+            // ASSERT
+            Assert.AreEqual(1, result.Length);
+            Assert.AreEqual(2.222, result[0]);
+        }
     }
 }

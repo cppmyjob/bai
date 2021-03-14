@@ -2,6 +2,6 @@
 {
     public interface INeuronFunction
     {
-
+        float Compute(float value);
     }
 }
