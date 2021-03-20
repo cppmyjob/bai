@@ -27,13 +27,12 @@ namespace Bai.Intelligence.Tests
             var cycle = new FunctionCycle(1);
 
             var function = new NeuronFunctionStub();
-            var item1 = new FunctionCycle.Item() {Function = function, OutputIndex = 1, InputValueIndex = 0};
+            var item1 = new FunctionCycle.Item() {Function = function, TempOutputIndex = 1, InputValueIndex = 0};
             cycle.Items.Add(item1);
 
             // ACT
-            var memory = new float[0];
             var tempMemory = new float[] { 33, 0 };
-            cycle.Compute(memory, tempMemory);
+            cycle.Compute(tempMemory);
 
             // ASSERT
             Assert.AreEqual(1, NeuronFunctionStub.CallCount);

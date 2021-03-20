@@ -6,6 +6,6 @@ namespace Bai.Intelligence.Cpu.Runtime
 {
     public abstract class Cycle
     {
-        public abstract void Compute(float[] memory, float[] tempMemory);
+        public abstract void Compute(float[] tempMemory);
     }
 }

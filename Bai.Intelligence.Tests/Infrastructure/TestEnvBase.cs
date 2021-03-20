@@ -47,19 +47,19 @@ namespace Bai.Intelligence.Tests.Infrastructure
             var genes = new List<BaseGene>
                         {
                             new CreateNeuronGene(),
-                            new AddInputsGene()
+                            new AddInputsGene
                             {
                                 Dominant = true,
                                 Inputs = new[]
                                          {
-                                             new NeuronInput() {SourceIndex = 2, Weight = 1.1F},
-                                             new NeuronInput() {SourceIndex = 0, Weight = 2.2F},
-                                             new NeuronInput() {SourceIndex = 1, Weight = 3.3F},
+                                             new NeuronInput {SourceIndex = 2, Weight = 1.1F},
+                                             new NeuronInput {SourceIndex = 0, Weight = 2.2F},
+                                             new NeuronInput {SourceIndex = 1, Weight = 3.3F},
                                          }
                             },
                             new AddSigmoidFunctionGene {
                                 Dominant = true, 
-                                Alfa = 4.4F,
+                                Alfa = 0.1F,
                                 OutputIndex = 3
                             }
                         };

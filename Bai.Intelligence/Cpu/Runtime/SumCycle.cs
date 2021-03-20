@@ -21,7 +21,7 @@ namespace Bai.Intelligence.Cpu.Runtime
             Items = new List<Item>(count);
         }
 
-        public override void Compute(float[] memory, float[] tempMemory)
+        public override void Compute(float[] tempMemory)
         {
             foreach (var item in Items)
             {

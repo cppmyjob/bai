@@ -25,14 +25,14 @@ namespace Bai.Intelligence.Tests
         {
             // ARRANGE
             var definition = _env.CreateSimpleNeuron();
+            var inputOutputCount = definition.InputCount + definition.OutputCount;
 
             // ACT
             var builder = new CpuBuilder();
             var runtime = (CpuRuntime)builder.Build(definition);
 
             // ASSERT
-            Assert.AreEqual(4, runtime.Memory.Length);
-            Assert.AreEqual(4, runtime.TempMemory.Length);
+            Assert.AreEqual(inputOutputCount + 4, runtime.TempMemory.Length);
         }
 
         [Test]
@@ -55,6 +55,7 @@ namespace Bai.Intelligence.Tests
         {
             // ARRANGE
             var definition = _env.CreateSimpleNeuron();
+            var inputOutputCount = definition.InputCount + definition.OutputCount;
 
             // ACT
             var builder = new CpuBuilder();
@@ -65,17 +66,17 @@ namespace Bai.Intelligence.Tests
             Assert.AreEqual(3, multiCycle.Items.Count);
 
             var item1 = multiCycle.Items[0];
-            Assert.AreEqual(0, item1.OutputIndex);
+            Assert.AreEqual(inputOutputCount + 0, item1.OutputIndex);
             Assert.AreEqual(0, item1.SourceIndex);
             Assert.AreEqual(2.2, item1.Weight, 0.0001);
 
             var item2 = multiCycle.Items[1];
-            Assert.AreEqual(1, item2.OutputIndex);
+            Assert.AreEqual(inputOutputCount + 1, item2.OutputIndex);
             Assert.AreEqual(1, item2.SourceIndex);
             Assert.AreEqual(3.3, item2.Weight, 0.0001);
 
             var item3 = multiCycle.Items[2];
-            Assert.AreEqual(2, item3.OutputIndex);
+            Assert.AreEqual(inputOutputCount + 2, item3.OutputIndex);
             Assert.AreEqual(2, item3.SourceIndex);
             Assert.AreEqual(1.1, item3.Weight, 0.0001);
         }
@@ -100,7 +101,7 @@ namespace Bai.Intelligence.Tests
         {
             // ARRANGE
             var definition = _env.CreateSimpleNeuron();
-
+            var inputOutputCount = definition.InputCount + definition.OutputCount;
             // ACT
             var builder = new CpuBuilder();
             var runtime = (CpuRuntime)builder.Build(definition);
@@ -112,9 +113,11 @@ namespace Bai.Intelligence.Tests
             var item = cycle.Items[0];
 
             Assert.AreEqual(3, item.Indexes.Length);
-            Assert.AreEqual(new [] {0, 1, 2}, item.Indexes);
+            Assert.AreEqual(
+                new [] {inputOutputCount + 0, inputOutputCount + 1, inputOutputCount + 2 }, 
+                item.Indexes);
             Assert.AreEqual(0, item.NeuronIndex);
-            Assert.AreEqual(3, item.ResultIndex);
+            Assert.AreEqual(inputOutputCount + 3, item.ResultIndex);
         }
 
         [Test]
@@ -138,6 +141,7 @@ namespace Bai.Intelligence.Tests
         {
             // ARRANGE
             var definition = _env.CreateSimpleNeuron();
+            var inputOutputCount = definition.InputCount + definition.OutputCount;
 
             // ACT
             var builder = new CpuBuilder();
@@ -149,12 +153,12 @@ namespace Bai.Intelligence.Tests
             Assert.AreEqual(1, cycle.Items.Count);
             var item = cycle.Items[0];
 
-            Assert.AreEqual(3, item.InputValueIndex);
-            Assert.AreEqual(3, item.OutputIndex);
+            Assert.AreEqual(inputOutputCount + 3, item.InputValueIndex);
+            Assert.AreEqual(3, item.TempOutputIndex);
 
             Assert.IsInstanceOf(typeof(SigmoidFunction), item.Function);
             var function = (SigmoidFunction) item.Function;
-            Assert.AreEqual(4.4, function.Alfa, 0.00001);
+            Assert.AreEqual(0.1, function.Alfa, 0.00001);
         }
     }
 }

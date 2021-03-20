@@ -28,9 +28,8 @@ namespace Bai.Intelligence.Tests
             cycle.Items.Add(item1);
 
             // ACT
-            var memory = new float[0];
             var tempMemory = new float[] { 3, 5, 7, 0 };
-            cycle.Compute(memory, tempMemory);
+            cycle.Compute(tempMemory);
 
             // ASSERT
             Assert.AreEqual(15F, tempMemory[3]);

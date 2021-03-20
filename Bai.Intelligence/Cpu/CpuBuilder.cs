@@ -12,14 +12,14 @@ namespace Bai.Intelligence.Cpu
     {
         public IRuntime Build(NetworkDefinition definition)
         {
-            var memorySize = definition.InputCount + definition.OutputCount;
+            var inputOutputCount = definition.InputCount + definition.OutputCount;
 
-            var runtime = new CpuRuntime();
+            var runtime = new CpuRuntime(definition.InputCount, definition.OutputCount);
 
-            runtime.Memory = new float[memorySize];
-
-            var buildRuntimeContext = new BuildRuntimeContext();
-            buildRuntimeContext.RuntimeCycles = runtime.Cycles;
+            var buildRuntimeContext = new BuildRuntimeContext {
+                RuntimeCycles = runtime.Cycles,
+                TempMemoryIndex = inputOutputCount
+            };
             AddCycles(definition, buildRuntimeContext);
 
             runtime.TempMemory = new float[buildRuntimeContext.TempMemoryIndex];
@@ -107,7 +107,7 @@ namespace Bai.Intelligence.Cpu
                 cycle.Items.Add(new FunctionCycle.Item {
                                                              Function = neuron.Function,
                                                              InputValueIndex = sumCycleItem.ResultIndex,
-                                                             OutputIndex = neuron.Source.Index
+                                                             TempOutputIndex = neuron.Source.Index
                                                       });
             }
             buildRuntimeContext.RuntimeCycles.Add(cycle);

@@ -11,7 +11,7 @@ namespace Bai.Intelligence.Cpu.Runtime
         {
             public INeuronFunction Function { get; set; }
             public int InputValueIndex { get; set; }
-            public int OutputIndex { get; set; }
+            public int TempOutputIndex { get; set; }
         }
 
         public List<Item> Items { get; }
@@ -21,11 +21,11 @@ namespace Bai.Intelligence.Cpu.Runtime
             Items = new List<Item>(count);
         }
 
-        public override void Compute(float[] memory, float[] tempMemory)
+        public override void Compute(float[] tempMemory)
         {
             foreach (var item in Items)
             {
-                tempMemory[item.OutputIndex] = item.Function.Compute(tempMemory[item.InputValueIndex]);
+                tempMemory[item.TempOutputIndex] = item.Function.Compute(tempMemory[item.InputValueIndex]);
             }
         }
     }
