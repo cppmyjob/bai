@@ -62,5 +62,29 @@ namespace Bai.Intelligence.Tests
             Assert.AreEqual(1, result.Length);
             Assert.AreEqual(0.770298949F, result[0]);
         }
+
+
+        [Test]
+        public void ShouldCalculate2LayersNetwork()
+        {
+            // ARRANGE
+            var definition = _env.Create2LayersNetwork();
+            var builder = new CpuBuilder();
+            var runtime = (CpuRuntime)builder.Build(definition);
+            var memory = new[] { 1F, 2F, 3F };
+            runtime.SetInputMemory(memory);
+
+            // ACT
+            var input = new RuntimeInput
+                        {
+                            Offset = 0,
+                            Length = memory.Length
+                        };
+            var result = runtime.Compute(new[] { input });
+
+            // ASSERT
+            Assert.AreEqual(1, result.Length);
+            Assert.AreEqual(0.8934361678F, result[0]);
+        }
     }
 }

@@ -11,7 +11,7 @@ using NUnit.Framework;
 
 namespace Bai.Intelligence.Tests
 {
-    public class CpuBuilderTests
+    public class CpuBuilderSimpleNeuronTests
     {
         private TestEnvBase _env;
         [SetUp]

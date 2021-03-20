@@ -12,13 +12,11 @@ namespace Bai.Intelligence.Cpu
     {
         public IRuntime Build(NetworkDefinition definition)
         {
-            var inputOutputCount = definition.InputCount + definition.OutputCount;
-
             var runtime = new CpuRuntime(definition.InputCount, definition.OutputCount);
 
             var buildRuntimeContext = new BuildRuntimeContext {
                 RuntimeCycles = runtime.Cycles,
-                TempMemoryIndex = inputOutputCount
+                TempMemoryIndex = definition.InputCount
             };
             AddCycles(definition, buildRuntimeContext);
 
@@ -30,6 +28,10 @@ namespace Bai.Intelligence.Cpu
         private void AddCycles(NetworkDefinition definition, BuildRuntimeContext buildRuntimeContext)
         {
             var neurons = CreateNeurons(definition);
+            
+            // add space to neuron outputs
+            buildRuntimeContext.TempMemoryIndex += neurons.Count;
+
             ConfigureCycles(definition, neurons, buildRuntimeContext);
         }
 
@@ -86,31 +88,53 @@ namespace Bai.Intelligence.Cpu
                                    });
             }
 
+            var source = Enumerable.Range(0, definition.InputCount).ToList();
 
-            var source = Enumerable.Range(0, definition.InputCount).ToArray();
-            var inputs = GetMapItemsForCycle(map, source);
-
-            var multiCycle = AddMultiCycle(buildRuntimeContext, inputs);
-            var sumCycle = AddSumCycle(buildRuntimeContext, multiCycle);
-            AddFunctionCycle(buildRuntimeContext, neurons, sumCycle);
-
-            foreach (var input in inputs.SelectMany(t => t.Inputs)) input.Processed = true;
+            do
+            {
+                var inputs = GetMapItemsForCycle(map, source);
+                var multiCycle = AddMultiCycle(buildRuntimeContext, inputs);
+                var sumCycle = AddSumCycle(buildRuntimeContext, multiCycle);
+                source = AddFunctionCycle(buildRuntimeContext, neurons, sumCycle);
+                foreach (var input in inputs.SelectMany(t => t.Inputs)) input.Processed = true;
+                ClearMap(map);
+            } while (map.Keys.Count > 0);
         }
 
-        private void AddFunctionCycle(BuildRuntimeContext buildRuntimeContext, List<Neuron> neurons, SumCycle sumCycle)
+        private void ClearMap(Dictionary<int, MapItem> map)
+        {
+            var toDelete = new List<int>();
+            foreach (var mapItem in map)
+            {
+                mapItem.Value.Inputs.RemoveAll(t => t.Processed);
+                if (mapItem.Value.Inputs.Count == 0)
+                    toDelete.Add(mapItem.Key);
+            }
+
+            foreach (var index in toDelete)
+            {
+                map.Remove(index);
+            }
+        }
+
+        private List<int> AddFunctionCycle(BuildRuntimeContext buildRuntimeContext, List<Neuron> neurons, SumCycle sumCycle)
         {
             var neuronDict = neurons.ToDictionary(t => t.Index, t => t);
             var cycle = new FunctionCycle(sumCycle.Items.Count);
+            var result = new List<int>(sumCycle.Items.Count);
             foreach (var sumCycleItem in sumCycle.Items)
             {
                 var neuron = neuronDict[sumCycleItem.NeuronIndex];
+                var outputIndex = neuron.Source.Index;
                 cycle.Items.Add(new FunctionCycle.Item {
                                                              Function = neuron.Function,
                                                              InputValueIndex = sumCycleItem.ResultIndex,
                                                              TempOutputIndex = neuron.Source.Index
                                                       });
+                result.Add(outputIndex);
             }
             buildRuntimeContext.RuntimeCycles.Add(cycle);
+            return result;
         }
 
         private MultiCycle AddMultiCycle(BuildRuntimeContext buildRuntimeContext, List<MapItem> inputs)
@@ -153,7 +177,7 @@ namespace Bai.Intelligence.Cpu
             return cycle;
         }
 
-        private List<MapItem> GetMapItemsForCycle(Dictionary<int, MapItem> map, int[] sourcesIndex)
+        private List<MapItem> GetMapItemsForCycle(Dictionary<int, MapItem> map, List<int> sourcesIndex)
         {
             var result = new List<MapItem>();
             foreach (var index in sourcesIndex)
