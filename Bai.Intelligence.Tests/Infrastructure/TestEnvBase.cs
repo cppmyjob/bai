@@ -13,6 +13,7 @@ namespace Bai.Intelligence.Tests.Infrastructure
 {
     public class TestEnvBase
     {
+
         public NetworkDefinition CreateSimpleNeuron()
         {
             var result = new NetworkDefinition

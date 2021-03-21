@@ -70,6 +70,22 @@ namespace Bai.Intelligence.Cpu
         private void ConfigureCycles(NetworkDefinition definition, List<Neuron> neurons,
             BuildRuntimeContext buildRuntimeContext)
         {
+            var inputMap = CreateInputMap(neurons);
+            var source = Enumerable.Range(0, definition.InputCount).ToList();
+
+            do
+            {
+                var inputs = GetMapItemsForCycle(inputMap, source);
+                var multiCycle = AddMultiCycle(buildRuntimeContext, inputs);
+                var sumCycle = AddSumCycle(buildRuntimeContext, multiCycle);
+                source = AddFunctionCycle(buildRuntimeContext, neurons, sumCycle);
+                foreach (var input in inputs.SelectMany(t => t.Inputs)) input.Processed = true;
+                ClearMap(inputMap);
+            } while (inputMap.Keys.Count > 0);
+        }
+
+        private static Dictionary<int, MapItem> CreateInputMap(List<Neuron> neurons)
+        {
             var map = new Dictionary<int, MapItem>();
             foreach (var neuron in neurons)
             foreach (var input in neuron.Inputs)
@@ -88,17 +104,7 @@ namespace Bai.Intelligence.Cpu
                                    });
             }
 
-            var source = Enumerable.Range(0, definition.InputCount).ToList();
-
-            do
-            {
-                var inputs = GetMapItemsForCycle(map, source);
-                var multiCycle = AddMultiCycle(buildRuntimeContext, inputs);
-                var sumCycle = AddSumCycle(buildRuntimeContext, multiCycle);
-                source = AddFunctionCycle(buildRuntimeContext, neurons, sumCycle);
-                foreach (var input in inputs.SelectMany(t => t.Inputs)) input.Processed = true;
-                ClearMap(map);
-            } while (map.Keys.Count > 0);
+            return map;
         }
 
         private void ClearMap(Dictionary<int, MapItem> map)
