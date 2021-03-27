@@ -7,11 +7,9 @@ namespace Bai.Intelligence.Models.Layers
 {
     public abstract class Layer
     {
-        protected virtual int GetInputCount()
-        {
-            return 0;
-        }
+        public abstract int GetInputCount();
+        public abstract int GetOutputCount();
 
-        public abstract List<BaseGene> Compile(Layer previousLayer);
+        public abstract List<BaseGene> Compile(SequentialContext context);
     }
 }

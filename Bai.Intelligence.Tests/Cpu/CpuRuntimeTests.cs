@@ -1,11 +1,10 @@
-using System.Runtime.InteropServices.ComTypes;
 using Bai.Intelligence.Cpu;
 using Bai.Intelligence.Cpu.Runtime;
 using Bai.Intelligence.Interfaces;
 using Bai.Intelligence.Tests.Infrastructure;
 using NUnit.Framework;
 
-namespace Bai.Intelligence.Tests
+namespace Bai.Intelligence.Tests.Cpu
 {
     public class CpuRuntimeTests
     {

@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Bai.Intelligence.Cpu;
 using Bai.Intelligence.Definition.Dna.Genes;
 using Bai.Intelligence.Definition.Dna.Genes.Functions;
+using Bai.Intelligence.Initializers;
 
 namespace Bai.Intelligence.Models.Layers
 {
     public class Dense : Layer
     {
-        private readonly int _units;
         private readonly ActivationType _activation;
         private readonly int _inputDim;
+        private readonly int _units;
 
         public Dense(int units, ActivationType activation = ActivationType.Linear, int inputDim = 0)
         {
@@ -20,51 +20,74 @@ namespace Bai.Intelligence.Models.Layers
             _inputDim = inputDim;
         }
 
-
-        public override List<BaseGene> Compile(Layer previousLayer)
+        public override int GetInputCount()
         {
-            var result = new List<BaseGene>();
-            if (previousLayer == null && _inputDim > 0)
-                // TODO new exception type
+            if (_inputDim == 0)
+                // TODO
                 throw new Exception();
+            return _inputDim;
+        }
 
-            int inputCount;
-            if (previousLayer == null)
-                inputCount = _inputDim;
-            else
-                inputCount = previousLayer.;
+        public override int GetOutputCount()
+        {
+            return _units;
+        }
 
-            for (int i = 0; i < _units; i++)
+        public override List<BaseGene> Compile(SequentialContext context)
+        {
+            var initializer = new GlorotUniform();
+            var weights = initializer.GetValues(context.PreviousInputCount, _units);
+
+            var result = new List<BaseGene>();
+            for (var i = 0; i < _units; i++)
             {
-                AddNeuron(result);
+                AddNeuron(context, result, i, weights);
             }
-
             return result;
         }
 
-        private void AddNeuron(List<BaseGene> result)
+        private void AddNeuron(SequentialContext context, List<BaseGene> result, 
+            int neuronIndex, float[] weights)
         {
             result.AddRange(new BaseGene[]
                             {
-
                                 new CreateNeuronGene(),
                                 new AddInputsGene
                                 {
-                                    Dominant = true,
-                                    Inputs = new[]
-                                             {
-                                                 new NeuronInput {SourceIndex = 2, Weight = 1.1F},
-                                                 new NeuronInput {SourceIndex = 0, Weight = 2.2F},
-                                                 new NeuronInput {SourceIndex = 1, Weight = 3.3F},
-                                             }
+                                    Inputs = CreateInputs(context, neuronIndex, weights)
                                 },
-                                new AddSigmoidFunctionGene
-                                {
-                                    Dominant = true,
-                                    Alfa = 0.1F,
-                                    OutputIndex = 3
-                                }
+                                CreateFunctionGene(context)
                             });
+        }
+
+        private AddSigmoidFunctionGene CreateFunctionGene(SequentialContext context)
+        {
+            switch (_activation)
+            {
+                case ActivationType.Sigmoid:
+                    return new AddSigmoidFunctionGene
+                           {
+                               OutputIndex = context.OutputOffset++,
+                               Alfa = 1
+                           };
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
+        private NeuronInput[] CreateInputs(SequentialContext context, int neuronIndex, float[] weights)
+        {
+            var result = new List<NeuronInput>();
+            var inputOffset = context.InputOffset;
+            for (var i = 0; i < context.PreviousInputCount; i++)
+            {
+                var input = new NeuronInput {
+                    Weight = weights[neuronIndex * context.PreviousInputCount + i],
+                    SourceIndex = inputOffset++
+                };
+                result.Add(input);
+            }
+            return result.ToArray();
         }
     }
 }

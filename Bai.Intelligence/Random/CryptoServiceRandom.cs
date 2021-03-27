@@ -8,7 +8,7 @@ namespace Bai.Intelligence.Random
 {
     public class CryptoServiceRandom : IRandom
     {
-        private readonly RNGCryptoServiceProvider _random = new RNGCryptoServiceProvider();
+        private readonly RNGCryptoServiceProvider _random = new();
 
         public double NextDouble()
         {
