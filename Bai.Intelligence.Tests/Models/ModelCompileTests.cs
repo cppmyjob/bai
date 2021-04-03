@@ -21,6 +21,7 @@ namespace Bai.Intelligence.Tests.Models
         [Test]
         public void ShouldCompileCorrectGenes()
         {
+
             // ARRANGE
             var model = new Sequential();
             model.Layers.Add(new Dense(3, inputDim: 4, activation: ActivationType.Sigmoid));
@@ -52,7 +53,7 @@ namespace Bai.Intelligence.Tests.Models
             Assert.AreEqual(expectedInputIndexes, inputs.Select(t => t.SourceIndex).ToArray());
 
             var outputs = manGenes.Where(t => t is BaseFunctionGene)
-                .Cast<BaseFunctionGene>().Select(t => t.OutputIndex).ToArray();
+                .Cast<BaseFunctionGene>().SelectMany(t => t.OutputIndexes).ToArray();
             var expectedOutputIndexes = new int[] {5, 6, 7, 8, 9, 4};
             Assert.AreEqual(expectedOutputIndexes, outputs);
         }

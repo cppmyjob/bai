@@ -2,6 +2,6 @@
 {
     public abstract class BaseFunctionGene : BaseGene
     {
-        public int OutputIndex { get; set; }
+        public int[] OutputIndexes { get; set; }
     }
 }

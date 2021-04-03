@@ -1,24 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using Bai.Intelligence.Cpu;
 using Bai.Intelligence.Function;
-using Bai.Intelligence.Interfaces;
 
 namespace Bai.Intelligence.Definition.Dna.Genes.Functions
 {
-    public class AddSigmoidFunctionGene: BaseFunctionGene
+    public class AddSoftMaxFunctionGene : BaseFunctionGene
     {
-        public float Alfa { get; set; }
         public override void Build(BuilderContext context)
         {
-            if (context.Neuron == null) 
+            if (context.Neuron == null)
                 return;
 
-            var function = new SigmoidFunction { Alfa = Alfa};
-            context.Neuron.Function = function;
+            context.Neuron.Function = new SoftMaxFunction();
             context.Neuron.Outputs = OutputIndexes;
+
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Bai.Intelligence.Function
 {
-    public class SigmoidFunction : INeuronFunction
+    public class SigmoidFunction : INeuronFunctionOneToOne
     {
         public float Alfa { get; set; }
         public float Compute(float value)

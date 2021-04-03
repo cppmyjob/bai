@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Bai.Intelligence.Cpu.Runtime;
 using Bai.Intelligence.Function;
 using Bai.Intelligence.Tests.Infrastructure;
 using NUnit.Framework;
 
-namespace Bai.Intelligence.Tests
+namespace Bai.Intelligence.Tests.Functions
 {
     public class SigmoidFunctionTests
     {

@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Bai.Intelligence.Cpu.Runtime;
+﻿using Bai.Intelligence.Cpu.Runtime;
 using Bai.Intelligence.Tests.Infrastructure;
 using Bai.Intelligence.Tests.Infrastructure.Stubs;
 using NUnit.Framework;
 
-namespace Bai.Intelligence.Tests
+namespace Bai.Intelligence.Tests.Cycles
 {
-    public class FunctionCycleTests
+    public class FunctionOneToOneCycleTests
     {
         private TestEnvBase _env;
 
@@ -24,10 +19,10 @@ namespace Bai.Intelligence.Tests
         public void ShouldCompute()
         {
             // ARRANGE
-            var cycle = new FunctionCycle(1);
+            var cycle = new FunctionOneToOneCycle(1);
 
-            var function = new NeuronFunctionStub();
-            var item1 = new FunctionCycle.Item() {Function = function, TempOutputIndex = 1, InputValueIndex = 0};
+            var function = new NeuronFunctionOneToOneStub();
+            var item1 = new FunctionOneToOneCycle.Item() {Function = function, TempOutputIndex = 1, InputValueIndex = 0};
             cycle.Items.Add(item1);
 
             // ACT
@@ -35,8 +30,8 @@ namespace Bai.Intelligence.Tests
             cycle.Compute(tempMemory);
 
             // ASSERT
-            Assert.AreEqual(1, NeuronFunctionStub.CallCount);
-            Assert.AreEqual(33F, NeuronFunctionStub.InputValue);
+            Assert.AreEqual(1, NeuronFunctionOneToOneStub.CallCount);
+            Assert.AreEqual(33F, NeuronFunctionOneToOneStub.InputValue);
             Assert.AreEqual(55F, tempMemory[1]);
 
         }

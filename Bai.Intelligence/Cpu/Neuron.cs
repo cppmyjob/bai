@@ -9,6 +9,6 @@ namespace Bai.Intelligence.Cpu
         public int Index { get; set; }
         public List<NeuronInput> Inputs { get; } = new List<NeuronInput>();
         public INeuronFunction Function { get; set; }
-        public NeuronSource Source { get; set; }
+        public int[] Outputs { get; set; }
     }
 }

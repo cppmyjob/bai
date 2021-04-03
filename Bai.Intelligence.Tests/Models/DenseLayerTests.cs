@@ -61,7 +61,7 @@ namespace Bai.Intelligence.Tests.Models
             var gene02 = genes[offset + 2];
             Assert.IsInstanceOf<AddSigmoidFunctionGene>(gene02);
             var functionGene = (AddSigmoidFunctionGene)gene02;
-            Assert.AreEqual(outputValue, functionGene.OutputIndex);
+            Assert.AreEqual(outputValue, functionGene.OutputIndexes[0]);
             Assert.AreEqual(1, functionGene.Alfa);
         }
 

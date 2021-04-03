@@ -5,18 +5,18 @@ using Bai.Intelligence.Function;
 
 namespace Bai.Intelligence.Cpu.Runtime
 {
-    public class FunctionCycle: Cycle
+    public class FunctionOneToOneCycle: Cycle
     {
         public class Item
         {
-            public INeuronFunction Function { get; set; }
+            public INeuronFunctionOneToOne Function { get; set; }
             public int InputValueIndex { get; set; }
             public int TempOutputIndex { get; set; }
         }
 
         public List<Item> Items { get; }
 
-        public FunctionCycle(int count)
+        public FunctionOneToOneCycle(int count)
         {
             Items = new List<Item>(count);
         }

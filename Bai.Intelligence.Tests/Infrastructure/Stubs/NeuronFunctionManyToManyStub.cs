@@ -7,16 +7,16 @@ using Bai.Intelligence.Function;
 
 namespace Bai.Intelligence.Tests.Infrastructure.Stubs
 {
-    public class NeuronFunctionStub: INeuronFunction
+    public class NeuronFunctionManyToManyStub : INeuronFunctionManyToMany
     {
         public static int CallCount { get; set; } = 0;
-        public static float InputValue { get; set; } = 0;
+        public static float[] InputValues { get; set; }
 
-        public float Compute(float value)
+        public float[] Compute(float[] values)
         {
             ++CallCount;
-            InputValue = value;
-            return 55F;
+            InputValues = values;
+            return new []{ 55F, 66F };
         }
     }
 }

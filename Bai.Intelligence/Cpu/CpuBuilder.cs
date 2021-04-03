@@ -4,12 +4,19 @@ using System.Linq;
 using Bai.Intelligence.Cpu.Runtime;
 using Bai.Intelligence.Definition;
 using Bai.Intelligence.Definition.Dna.Genes;
+using Bai.Intelligence.Function;
 using Bai.Intelligence.Interfaces;
 
 namespace Bai.Intelligence.Cpu
 {
     public class CpuBuilder : IBuilder
     {
+        private class CyclePreviousCycleData
+        {
+            public int[] OutputIndexes;
+            public int NeuronIndex;
+        }
+
         public IRuntime Build(NetworkDefinition definition)
         {
             var runtime = new CpuRuntime(definition.InputCount, definition.OutputCount);
@@ -30,7 +37,7 @@ namespace Bai.Intelligence.Cpu
             var neurons = CreateNeurons(definition);
             
             // add space to neuron outputs
-            buildRuntimeContext.TempMemoryIndex += neurons.Count;
+            buildRuntimeContext.TempMemoryIndex += neurons.Sum(t => t.Outputs.Length);
 
             ConfigureCycles(definition, neurons, buildRuntimeContext);
         }
@@ -70,6 +77,7 @@ namespace Bai.Intelligence.Cpu
         private void ConfigureCycles(NetworkDefinition definition, List<Neuron> neurons,
             BuildRuntimeContext buildRuntimeContext)
         {
+            var neuronDict = neurons.ToDictionary(t => t.Index, t => t);
             var inputMap = CreateInputMap(neurons);
             var source = Enumerable.Range(0, definition.InputCount).ToList();
 
@@ -77,11 +85,54 @@ namespace Bai.Intelligence.Cpu
             {
                 var inputs = GetMapItemsForCycle(inputMap, source);
                 var multiCycle = AddMultiCycle(buildRuntimeContext, inputs);
-                var sumCycle = AddSumCycle(buildRuntimeContext, multiCycle);
-                source = AddFunctionCycle(buildRuntimeContext, neurons, sumCycle);
-                foreach (var input in inputs.SelectMany(t => t.Inputs)) input.Processed = true;
+
+                var inputFunctionData = SeparateByFunctionType(multiCycle, neuronDict);
+
+                source = new List<int>(inputFunctionData.ManyToMany.Count + inputFunctionData.OneToOne.Count);
+
+                if (inputFunctionData.OneToOne.Count > 0)
+                {
+                    var sumCycle = AddSumCycle(buildRuntimeContext, inputFunctionData.OneToOne);
+                    AddFunctionOneToOneCycle(buildRuntimeContext, source, neuronDict, sumCycle);
+                }
+
+                if (inputFunctionData.ManyToMany.Count > 0)
+                {
+                    AddFunctionManyToManyCycle(buildRuntimeContext, source, neuronDict, inputFunctionData.ManyToMany);
+                }
+
+                foreach (var input in inputs.SelectMany(t => t.Inputs)) 
+                    input.Processed = true;
                 ClearMap(inputMap);
+
             } while (inputMap.Keys.Count > 0);
+        }
+
+        private (List<CyclePreviousCycleData> OneToOne, List<CyclePreviousCycleData> ManyToMany) SeparateByFunctionType(
+            MultiCycle multiCycle, Dictionary<int, Neuron> neuronDict)
+        {
+            var oneToOne = new List<CyclePreviousCycleData>();
+            var manyToMany = new List<CyclePreviousCycleData>();
+            var groups = multiCycle.Items.GroupBy(t => t.NeuronIndex, item => item);
+            foreach (var group in groups)
+            {
+                var indexes = group.Select(t => t.OutputIndex).ToArray();
+                var data = new CyclePreviousCycleData
+                           {
+                               NeuronIndex = group.Key,
+                               OutputIndexes = indexes
+                           };
+                var function = neuronDict[group.Key].Function;
+                if (function is INeuronFunctionManyToMany)
+                {
+                    manyToMany.Add(data);
+                }
+                else
+                {
+                    oneToOne.Add(data);
+                }
+            }
+            return (oneToOne, manyToMany);
         }
 
         private static Dictionary<int, MapItem> CreateInputMap(List<Neuron> neurons)
@@ -123,24 +174,45 @@ namespace Bai.Intelligence.Cpu
             }
         }
 
-        private List<int> AddFunctionCycle(BuildRuntimeContext buildRuntimeContext, List<Neuron> neurons, SumCycle sumCycle)
+        private void AddFunctionOneToOneCycle(BuildRuntimeContext buildRuntimeContext, List<int> source,
+            Dictionary<int, Neuron> neuronDict, SumCycle sumCycle)
         {
-            var neuronDict = neurons.ToDictionary(t => t.Index, t => t);
-            var cycle = new FunctionCycle(sumCycle.Items.Count);
-            var result = new List<int>(sumCycle.Items.Count);
+            
+            var cycle = new FunctionOneToOneCycle(sumCycle.Items.Count);
             foreach (var sumCycleItem in sumCycle.Items)
             {
                 var neuron = neuronDict[sumCycleItem.NeuronIndex];
-                var outputIndex = neuron.Source.Index;
-                cycle.Items.Add(new FunctionCycle.Item {
-                                                             Function = neuron.Function,
-                                                             InputValueIndex = sumCycleItem.ResultIndex,
-                                                             TempOutputIndex = neuron.Source.Index
-                                                      });
-                result.Add(outputIndex);
+                var outputIndex = neuron.Outputs[0];
+                cycle.Items.Add(new FunctionOneToOneCycle.Item {
+                    Function = (INeuronFunctionOneToOne)neuron.Function,
+                    InputValueIndex = sumCycleItem.ResultIndex,
+                    TempOutputIndex = outputIndex
+                });
+                source.Add(outputIndex);
             }
             buildRuntimeContext.RuntimeCycles.Add(cycle);
-            return result;
+        }
+
+        private void AddFunctionManyToManyCycle(BuildRuntimeContext buildRuntimeContext, List<int> source, 
+            Dictionary<int, Neuron> neuronDict, List<CyclePreviousCycleData> inputCycleData)
+        {
+            if (inputCycleData.Count == 0)
+                return;
+
+            var cycle = new FunctionManyToManyCycle(inputCycleData.Count);
+            foreach (var cycleData in inputCycleData)
+            {
+                var neuron = neuronDict[cycleData.NeuronIndex];
+                
+                cycle.Items.Add(new FunctionManyToManyCycle.Item
+                {
+                    Function = (INeuronFunctionManyToMany)neuron.Function,
+                    InputValueIndexes = cycleData.OutputIndexes,
+                    TempOutputIndexes = neuron.Outputs
+                });
+                source.AddRange(neuron.Outputs);
+            }
+            buildRuntimeContext.RuntimeCycles.Add(cycle);
         }
 
         private MultiCycle AddMultiCycle(BuildRuntimeContext buildRuntimeContext, List<MapItem> inputs)
@@ -162,21 +234,39 @@ namespace Bai.Intelligence.Cpu
             return cycle;
         }
 
-        private SumCycle AddSumCycle(BuildRuntimeContext buildRuntimeContext, MultiCycle multiCycle)
+        //private SumCycle AddSumCycle(BuildRuntimeContext buildRuntimeContext, MultiCycle multiCycle)
+        //{
+        //    var cycle = new SumCycle(10);
+
+        //    var groups = multiCycle.Items.GroupBy(t => t.NeuronIndex, item => item);
+
+        //    foreach (var group in groups)
+        //    {
+        //        var indexes = group.Select(t => t.OutputIndex).ToArray();
+        //        cycle.Items.Add(new SumCycle.Item
+        //                        {
+        //                            Indexes = indexes,
+        //                            NeuronIndex = group.Key,
+        //                            ResultIndex = buildRuntimeContext.TempMemoryIndex++
+        //                        });
+        //    }
+
+        //    buildRuntimeContext.RuntimeCycles.Add(cycle);
+        //    return cycle;
+        //}
+
+        private SumCycle AddSumCycle(BuildRuntimeContext buildRuntimeContext, List<CyclePreviousCycleData> inputCycleData)
         {
             var cycle = new SumCycle(10);
 
-            var groups = multiCycle.Items.GroupBy(t => t.NeuronIndex, item => item);
-
-            foreach (var group in groups)
+            foreach (var cycleData in inputCycleData)
             {
-                var indexes = group.Select(t => t.OutputIndex).ToArray();
                 cycle.Items.Add(new SumCycle.Item
-                                {
-                                    Indexes = indexes,
-                                    NeuronIndex = group.Key,
-                                    ResultIndex = buildRuntimeContext.TempMemoryIndex++
-                                });
+                {
+                    Indexes = cycleData.OutputIndexes,
+                    NeuronIndex = cycleData.NeuronIndex,
+                    ResultIndex = buildRuntimeContext.TempMemoryIndex++
+                });
             }
 
             buildRuntimeContext.RuntimeCycles.Add(cycle);

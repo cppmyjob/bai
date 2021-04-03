@@ -1,4 +1,9 @@
-﻿using Bai.Intelligence.Cpu;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Bai.Intelligence.Cpu;
 using Bai.Intelligence.Cpu.Runtime;
 using Bai.Intelligence.Function;
 using Bai.Intelligence.Tests.Infrastructure;
@@ -6,7 +11,7 @@ using NUnit.Framework;
 
 namespace Bai.Intelligence.Tests.Cpu
 {
-    public class CpuBuilderSimpleNeuronTests
+    public class CpuBuilderNeuronWithManyToManyFunctionTests
     {
         private TestEnvBase _env;
         [SetUp]
@@ -19,7 +24,7 @@ namespace Bai.Intelligence.Tests.Cpu
         public void ShouldAllocateValidMemorySize()
         {
             // ARRANGE
-            var definition = _env.CreateSimpleNeuron();
+            var definition = _env.CreateNeuronWithManyToManyFunction();
             var inputOutputCount = definition.InputCount + definition.OutputCount;
 
             // ACT
@@ -27,21 +32,22 @@ namespace Bai.Intelligence.Tests.Cpu
             var runtime = (CpuRuntime)builder.Build(definition);
 
             // ASSERT
-            Assert.AreEqual(inputOutputCount + 4, runtime.TempMemory.Length);
+            Assert.AreEqual(inputOutputCount + 3, runtime.TempMemory.Length);
         }
+
 
         [Test]
         public void MultiCycleShouldBeFirst()
         {
             // ARRANGE
-            var definition = _env.CreateSimpleNeuron();
+            var definition = _env.CreateNeuronWithManyToManyFunction();
 
             // ACT
             var builder = new CpuBuilder();
             var runtime = (CpuRuntime)builder.Build(definition);
 
             // ASSERT
-            Assert.GreaterOrEqual(runtime.Cycles.Count,  1);
+            Assert.GreaterOrEqual(runtime.Cycles.Count, 1);
             Assert.IsInstanceOf(typeof(MultiCycle), runtime.Cycles[0]);
         }
 
@@ -49,7 +55,7 @@ namespace Bai.Intelligence.Tests.Cpu
         public void MultiCycleShouldHaveCorrectValues()
         {
             // ARRANGE
-            var definition = _env.CreateSimpleNeuron();
+            var definition = _env.CreateNeuronWithManyToManyFunction();
             var inputOutputCount = definition.InputCount + definition.OutputCount;
 
             // ACT
@@ -57,7 +63,7 @@ namespace Bai.Intelligence.Tests.Cpu
             var runtime = (CpuRuntime)builder.Build(definition);
 
             // ASSERT
-            var multiCycle = (MultiCycle) runtime.Cycles[0];
+            var multiCycle = (MultiCycle)runtime.Cycles[0];
             Assert.AreEqual(3, multiCycle.Items.Count);
 
             var item1 = multiCycle.Items[0];
@@ -76,11 +82,12 @@ namespace Bai.Intelligence.Tests.Cpu
             Assert.AreEqual(1.1, item3.Weight, 0.0001);
         }
 
+
         [Test]
-        public void SumCycleShouldBeSecond()
+        public void FunctionCycleShouldBeSecond()
         {
             // ARRANGE
-            var definition = _env.CreateSimpleNeuron();
+            var definition = _env.CreateNeuronWithManyToManyFunction();
 
             // ACT
             var builder = new CpuBuilder();
@@ -88,46 +95,7 @@ namespace Bai.Intelligence.Tests.Cpu
 
             // ASSERT
             Assert.GreaterOrEqual(runtime.Cycles.Count, 2);
-            Assert.IsInstanceOf(typeof(SumCycle), runtime.Cycles[1]);
-        }
-
-        [Test]
-        public void SumCycleShouldHaveCorrectValues()
-        {
-            // ARRANGE
-            var definition = _env.CreateSimpleNeuron();
-            var inputOutputCount = definition.InputCount + definition.OutputCount;
-            // ACT
-            var builder = new CpuBuilder();
-            var runtime = (CpuRuntime)builder.Build(definition);
-
-            // ASSERT
-            var cycle = (SumCycle)runtime.Cycles[1];
-
-            Assert.AreEqual(1, cycle.Items.Count);
-            var item = cycle.Items[0];
-
-            Assert.AreEqual(3, item.Indexes.Length);
-            Assert.AreEqual(
-                new [] {inputOutputCount + 0, inputOutputCount + 1, inputOutputCount + 2 }, 
-                item.Indexes);
-            Assert.AreEqual(0, item.NeuronIndex);
-            Assert.AreEqual(inputOutputCount + 3, item.ResultIndex);
-        }
-
-        [Test]
-        public void FunctionCycleShouldBeThird()
-        {
-            // ARRANGE
-            var definition = _env.CreateSimpleNeuron();
-
-            // ACT
-            var builder = new CpuBuilder();
-            var runtime = (CpuRuntime)builder.Build(definition);
-
-            // ASSERT
-            Assert.GreaterOrEqual(runtime.Cycles.Count, 3);
-            Assert.IsInstanceOf(typeof(FunctionOneToOneCycle), runtime.Cycles[2]);
+            Assert.IsInstanceOf(typeof(FunctionManyToManyCycle), runtime.Cycles[1]);
         }
 
 
@@ -135,7 +103,7 @@ namespace Bai.Intelligence.Tests.Cpu
         public void FunctionCycleShouldHaveCorrectValues()
         {
             // ARRANGE
-            var definition = _env.CreateSimpleNeuron();
+            var definition = _env.CreateNeuronWithManyToManyFunction();
             var inputOutputCount = definition.InputCount + definition.OutputCount;
 
             // ACT
@@ -143,17 +111,15 @@ namespace Bai.Intelligence.Tests.Cpu
             var runtime = (CpuRuntime)builder.Build(definition);
 
             // ASSERT
-            var cycle = (FunctionOneToOneCycle)runtime.Cycles[2];
+            var cycle = (FunctionManyToManyCycle)runtime.Cycles[1];
 
             Assert.AreEqual(1, cycle.Items.Count);
             var item = cycle.Items[0];
 
-            Assert.AreEqual(inputOutputCount + 3, item.InputValueIndex);
-            Assert.AreEqual(3, item.TempOutputIndex);
+            Assert.AreEqual(new [] { 6, 7, 8 }, item.InputValueIndexes);
+            Assert.AreEqual(new [] { 3, 4, 5 }, item.TempOutputIndexes);
 
-            Assert.IsInstanceOf(typeof(SigmoidFunction), item.Function);
-            var function = (SigmoidFunction) item.Function;
-            Assert.AreEqual(0.1, function.Alfa, 0.00001);
+            Assert.IsInstanceOf(typeof(SoftMaxFunction), item.Function);
         }
     }
 }

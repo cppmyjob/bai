@@ -67,7 +67,7 @@ namespace Bai.Intelligence.Models.Layers
                 case ActivationType.Sigmoid:
                     return new AddSigmoidFunctionGene
                            {
-                               OutputIndex = context.OutputOffset++,
+                               OutputIndexes = new []{ context.OutputOffset++ },
                                Alfa = 1
                            };
                 default:
