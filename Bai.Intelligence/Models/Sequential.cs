@@ -26,11 +26,12 @@ namespace Bai.Intelligence.Models
 
             var genes = new List<BaseGene>();
             var globalOffset = firstInputCount + finalOutputCount;
-            var startedOutputOffset = globalOffset;
             context.OutputOffset = globalOffset;
+            var startedOutputOffset = globalOffset;
 
             for (int i = 0; i < Layers.Count; i++)
             {
+
                 var layer = Layers[i];
                 if (i == 0)
                 {
@@ -49,7 +50,6 @@ namespace Bai.Intelligence.Models
                 }
 
                 startedOutputOffset = context.OutputOffset;
-
                 genes.AddRange(layer.Compile(context));
             }
 

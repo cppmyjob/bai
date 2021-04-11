@@ -6,6 +6,8 @@ namespace Bai.Intelligence.Function
 {
     // https://towardsdatascience.com/softmax-activation-function-explained-a7e1bc3ad60
     // http://rinterested.github.io/statistics/softmax.html
+    // https://www.tensorflow.org/api_docs/python/tf/keras/layers/Softmax
+    // https://www.youtube.com/watch?v=omz_NdFgWyU см код в конце
     public class SoftMaxFunction : INeuronFunctionManyToMany
     {
         public float[] Compute(float[] values)
