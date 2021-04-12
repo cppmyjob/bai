@@ -22,42 +22,29 @@ namespace Bai.Intelligence.Models
 
             var firstInputCount = Layers[0].GetInputCount();
             var finalOutputCount = Layers[Layers.Count - 1].GetOutputCount();
-            var context = new SequentialContext();
+            var context = new SequentialContext(firstInputCount, finalOutputCount, Layers.Count);
 
             var genes = new List<BaseGene>();
-            var globalOffset = firstInputCount + finalOutputCount;
-            context.OutputOffset = globalOffset;
-            var startedOutputOffset = globalOffset;
 
             for (int i = 0; i < Layers.Count; i++)
             {
-
                 var layer = Layers[i];
                 if (i == 0)
                 {
-                    context.PreviousInputCount = firstInputCount;
-                    context.InputOffset = 0;
+                    context.Init();
                 }
                 else
                 {
-                    context.PreviousInputCount = Layers[i - 1].GetOutputCount();
-                    context.InputOffset = startedOutputOffset;
+                    context.NextLayer(Layers[i - 1].GetOutputCount());
                 }
-
-                if (i == Layers.Count - 1)
-                {
-                    context.OutputOffset = firstInputCount;
-                }
-
-                startedOutputOffset = context.OutputOffset;
                 genes.AddRange(layer.Compile(context));
             }
 
             NetworkDefinition = new NetworkDefinition()
-                                {
-                                    InputCount = firstInputCount,
-                                    OutputCount = finalOutputCount,
-                                    Chromosomes = new Chromosome[] {
+            {
+                InputCount = firstInputCount,
+                OutputCount = finalOutputCount,
+                Chromosomes = new Chromosome[] {
                                         new Chromosome
                                         {
                                             Man = new NeuronDna
@@ -70,8 +57,64 @@ namespace Bai.Intelligence.Models
                                                   },
                                         }
                                     }
-                                };
+            };
         }
 
+
+        //if (Layers.Count == 0)
+        //    // TODO
+        //    throw new Exception();
+
+        //var firstInputCount = Layers[0].GetInputCount();
+        //var finalOutputCount = Layers[Layers.Count - 1].GetOutputCount();
+        //var context = new SequentialContext();
+
+        //var genes = new List<BaseGene>();
+        //var globalOffset = firstInputCount + finalOutputCount;
+        //context.OutputOffset = globalOffset;
+        //var startedOutputOffset = globalOffset;
+
+        //for (int i = 0; i < Layers.Count; i++)
+        //{
+
+        //    var layer = Layers[i];
+        //    if (i == 0)
+        //    {
+        //        context.PreviousInputCount = firstInputCount;
+        //        context.InputOffset = 0;
+        //    }
+        //    else
+        //    {
+        //        context.PreviousInputCount = Layers[i - 1].GetOutputCount();
+        //        context.InputOffset = startedOutputOffset;
+        //    }
+
+        //    if (i == Layers.Count - 1)
+        //    {
+        //        context.OutputOffset = firstInputCount;
+        //    }
+
+        //    startedOutputOffset = context.OutputOffset;
+        //    genes.AddRange(layer.Compile(context));
+        //}
+
+        //NetworkDefinition = new NetworkDefinition()
+        //                    {
+        //                        InputCount = firstInputCount,
+        //                        OutputCount = finalOutputCount,
+        //                        Chromosomes = new Chromosome[] {
+        //                            new Chromosome
+        //                            {
+        //                                Man = new NeuronDna
+        //                                      {
+        //                                          Genes = genes.ToArray()
+        //                                      },
+        //                                Woman = new NeuronDna
+        //                                      {
+        //                                          Genes = genes.ToArray()
+        //                                      },
+        //                            }
+        //                        }
+        //                    };
     }
 }

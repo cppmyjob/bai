@@ -48,15 +48,11 @@ namespace Bai.Intelligence.Models.Layers
         {
             var result = new List<BaseGene>();
 
-            var outputOffset = context.OutputOffset;
-            //context.OutputOffset = context.PreviousInputOffset;
-
+            context.InsertLayer();
             var linearGenes = DefaultNeuronsGeneration(context, ActivationType.Linear);
             result.AddRange(linearGenes);
 
-            context.PreviousInputCount = _units;
-            context.InputOffset = context.PreviousInputOffset;
-            context.OutputOffset = outputOffset;
+            context.NextLayer(_units);
 
             var initializer = CreateInitializer();
             var weights = initializer.GetValues(_units, _units);
