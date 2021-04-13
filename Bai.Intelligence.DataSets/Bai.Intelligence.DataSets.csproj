@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Mnist\t10k-images-idx3-ubyte.zip" />
+    <None Remove="Mnist\t10k-labels-idx1-ubyte.zip" />
+    <None Remove="Mnist\train-images-idx3-ubyte.zip" />
+    <None Remove="Mnist\train-labels-idx1-ubyte.zip" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Mnist\t10k-images-idx3-ubyte.zip" />
+    <EmbeddedResource Include="Mnist\t10k-labels-idx1-ubyte.zip" />
+    <EmbeddedResource Include="Mnist\train-images-idx3-ubyte.zip" />
+    <EmbeddedResource Include="Mnist\train-labels-idx1-ubyte.zip" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bai.Intelligence\Bai.Intelligence.csproj" />
+  </ItemGroup>
+
+</Project>
