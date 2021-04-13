@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Bai.Intelligence.Cpu.Runtime;
 using Bai.Intelligence.Definition;
+using Bai.Intelligence.Definition.Dna;
 using Bai.Intelligence.Definition.Dna.Genes;
 using Bai.Intelligence.Function;
+using Bai.Intelligence.Genetic;
 using Bai.Intelligence.Interfaces;
+using Bai.Intelligence.Random;
 
 namespace Bai.Intelligence.Cpu
 {
@@ -19,44 +22,46 @@ namespace Bai.Intelligence.Cpu
 
         public IRuntime Build(NetworkDefinition definition)
         {
+            using var random = RandomFactory.Instance.Create();
+
             var runtime = new CpuRuntime(definition.InputCount, definition.OutputCount);
 
-            var buildRuntimeContext = new BuildRuntimeContext {
-                RuntimeCycles = runtime.Cycles,
-                TempMemoryIndex = definition.InputCount
-            };
-            AddCycles(definition, buildRuntimeContext);
+            var buildRuntimeContext = new BuildRuntimeContext
+                                      {
+                                          RuntimeCycles = runtime.Cycles,
+                                          TempMemoryIndex = definition.InputCount
+                                      };
+            AddCycles(definition, buildRuntimeContext, random);
 
             runtime.TempMemory = new float[buildRuntimeContext.TempMemoryIndex];
 
             return runtime;
         }
 
-        private void AddCycles(NetworkDefinition definition, BuildRuntimeContext buildRuntimeContext)
+        private void AddCycles(NetworkDefinition definition, BuildRuntimeContext buildRuntimeContext,
+            IRandom random)
         {
-            var neurons = CreateNeurons(definition);
+            var phenotypeCreator = new PhenotypeCreator(random);
+
+            var phenotype = phenotypeCreator.Execute(definition);
+
+            var neurons = CreateNeurons(phenotype);
             
             // add space to neuron outputs
             buildRuntimeContext.TempMemoryIndex += neurons.Sum(t => t.Outputs.Length);
 
-            ConfigureCycles(definition, neurons, buildRuntimeContext);
+            ConfigureCycles(definition.InputCount, neurons, buildRuntimeContext);
         }
 
-        private List<Neuron> CreateNeurons(NetworkDefinition definition)
+        private List<Neuron> CreateNeurons(List<NeuronDna> phenotype)
         {
             var neurons = new List<Neuron>();
             var context = new BuilderContext();
             var neuronIndex = 0;
-            foreach (var chromosome in definition.Chromosomes)
+            foreach (var chromosome in phenotype)
             {
-                var woman = chromosome.Woman;
-                var man = chromosome.Man;
-                for (var j = 0; j < woman.Genes.Length; j++)
+                foreach (var gene in chromosome.Genes)
                 {
-                    var womanGene = woman.Genes[j];
-                    var manGene = man.Genes[j];
-                    var gene = GetFinalGene(womanGene, manGene);
-
                     if (gene is CreateNeuronGene)
                     {
                         context.Neuron = new Neuron
@@ -66,20 +71,18 @@ namespace Bai.Intelligence.Cpu
                         neurons.Add(context.Neuron);
                         continue;
                     }
-
                     gene.Build(context);
                 }
             }
-
             return neurons;
         }
 
-        private void ConfigureCycles(NetworkDefinition definition, List<Neuron> neurons,
+        private void ConfigureCycles(int inputCount, List<Neuron> neurons,
             BuildRuntimeContext buildRuntimeContext)
         {
             var neuronDict = neurons.ToDictionary(t => t.Index, t => t);
             var inputMap = CreateInputMap(neurons);
-            var source = Enumerable.Range(0, definition.InputCount).ToList();
+            var source = Enumerable.Range(0, inputCount).ToList();
 
             do
             {

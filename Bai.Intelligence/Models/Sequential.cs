@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Bai.Intelligence.Data;
 using Bai.Intelligence.Definition;
 using Bai.Intelligence.Definition.Dna;
 using Bai.Intelligence.Definition.Dna.Genes;
@@ -13,6 +14,11 @@ namespace Bai.Intelligence.Models
         public List<Layer> Layers { get; } = new List<Layer>();
 
         public NetworkDefinition NetworkDefinition { get; private set; }
+
+        public void Fit(DataArray x, DataArray y)
+        {
+
+        }
 
         public void Compile()
         {

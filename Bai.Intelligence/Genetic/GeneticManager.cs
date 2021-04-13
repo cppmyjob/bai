@@ -53,7 +53,7 @@ namespace Bai.Intelligence.Genetic
 
         private void CreatingPopulation(NetworkDefinition[] men, int from)
         {
-            for (int i = from; i < men.Length; i++)
+            for (var i = from; i < men.Length; i++)
             {
                 //var item = InternalCreateItem();
                 //FillValues(item);
