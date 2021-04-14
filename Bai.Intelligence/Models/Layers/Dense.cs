@@ -97,7 +97,7 @@ namespace Bai.Intelligence.Models.Layers
                             });
         }
 
-        private BaseFunctionGene CreateFunctionGene(SequentialContext context, NeuronInput[] inputs, 
+        private BaseFunctionGene CreateFunctionGene(SequentialContext context, List<NeuronInput> inputs, 
             ActivationType activationType)
         {
             switch (activationType)
@@ -114,7 +114,7 @@ namespace Bai.Intelligence.Models.Layers
                                Alfa = 1
                            };
                 case ActivationType.Softmax:
-                    var outputIndexes = new int[inputs.Length];
+                    var outputIndexes = new int[inputs.Count];
                     for (var i = 0; i < outputIndexes.Length; i++)
                     {
                         outputIndexes[i] = context.OutputOffset++;
@@ -128,7 +128,7 @@ namespace Bai.Intelligence.Models.Layers
             }
         }
 
-        private NeuronInput[] CreateInputs(SequentialContext context, int neuronIndex, InitializerResult initializerResult)
+        private List<NeuronInput> CreateInputs(SequentialContext context, int neuronIndex, InitializerResult initializerResult)
         {
             var result = new List<NeuronInput>();
             var inputOffset = context.InputOffset;
@@ -140,7 +140,7 @@ namespace Bai.Intelligence.Models.Layers
                 };
                 result.Add(input);
             }
-            return result.ToArray();
+            return result;
         }
     }
 }

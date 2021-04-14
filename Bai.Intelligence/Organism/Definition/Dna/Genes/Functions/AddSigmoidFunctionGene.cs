@@ -1,4 +1,5 @@
 ﻿using Bai.Intelligence.Cpu;
+using Bai.Intelligence.Interfaces;
 using Bai.Intelligence.Organism.Functions;
 
 namespace Bai.Intelligence.Organism.Definition.Dna.Genes.Functions
@@ -15,5 +16,19 @@ namespace Bai.Intelligence.Organism.Definition.Dna.Genes.Functions
             context.Neuron.Function = function;
             context.Neuron.Outputs = OutputIndexes;
         }
+
+        public override BaseGene Clone()
+        {
+            var result = new AddSigmoidFunctionGene();
+            result.Alfa = Alfa;
+            SetClonedValues(result);
+            return result;
+        }
+
+        public override void RandomizeValues(IRandom random)
+        {
+            // TODO for Outputs
+        }
+
     }
 }

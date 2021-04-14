@@ -9,7 +9,7 @@ using Bai.Intelligence.Organism.Definition;
 using Bai.Intelligence.Organism.Definition.Dna;
 using Bai.Intelligence.Organism.Definition.Dna.Genes;
 using Bai.Intelligence.Organism.Functions;
-using Bai.Intelligence.Random;
+using Bai.Intelligence.Utils.Random;
 
 namespace Bai.Intelligence.Cpu
 {

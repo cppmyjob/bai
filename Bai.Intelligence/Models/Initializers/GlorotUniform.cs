@@ -1,5 +1,5 @@
 ﻿using System;
-using Bai.Intelligence.Random;
+using Bai.Intelligence.Utils.Random;
 
 namespace Bai.Intelligence.Models.Initializers
 {

@@ -1,9 +1,10 @@
-﻿using Bai.Intelligence.Organism.Definition;
+﻿using Bai.Intelligence.Interfaces;
+using Bai.Intelligence.Organism.Definition;
 
 namespace Bai.Intelligence.Models.Optimizers
 {
     public abstract class Optimizer
     {
-        public abstract void Run(NetworkDefinition networkDefinition);
+        public abstract void Run(ILogger logger, NetworkDefinition networkDefinition);
     }
 }

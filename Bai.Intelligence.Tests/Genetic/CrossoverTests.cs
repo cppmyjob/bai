@@ -10,9 +10,9 @@ using Bai.Intelligence.Organism;
 using Bai.Intelligence.Organism.Definition;
 using Bai.Intelligence.Organism.Definition.Dna;
 using Bai.Intelligence.Organism.Definition.Dna.Genes;
-using Bai.Intelligence.Random;
 using Bai.Intelligence.Tests.Infrastructure;
 using Bai.Intelligence.Tests.Infrastructure.Stubs;
+using Bai.Intelligence.Utils.Random;
 using NUnit.Framework;
 
 namespace Bai.Intelligence.Tests.Genetic
@@ -35,7 +35,7 @@ namespace Bai.Intelligence.Tests.Genetic
                              {
                                  InputCount = 3,
                                  OutputCount = 1,
-                                 Chromosomes = new[] { CreateSimpleChromosome(manGene, womanGene) }
+                                 Chromosomes = new List<Chromosome> { CreateSimpleChromosome(manGene, womanGene) }
                              };
                 return result;
             }
@@ -54,7 +54,7 @@ namespace Bai.Intelligence.Tests.Genetic
             {
                 var result = new NeuronDna
                              {
-                                 Genes = new []
+                                 Genes = new List<BaseGene>
                                          {
                                              CreateGene(geneType)
                                          }
@@ -111,9 +111,9 @@ namespace Bai.Intelligence.Tests.Genetic
             // ARRANGE
             Assert.AreEqual(3, result.InputCount);
             Assert.AreEqual(1, result.OutputCount);
-            Assert.AreEqual(1, result.Chromosomes.Length);
-            Assert.AreEqual(3, result.Chromosomes[0].Dna1.Genes.Length);
-            Assert.AreEqual(3, result.Chromosomes[0].Dna2.Genes.Length);
+            Assert.AreEqual(1, result.Chromosomes.Count);
+            Assert.AreEqual(3, result.Chromosomes[0].Dna1.Genes.Count);
+            Assert.AreEqual(3, result.Chromosomes[0].Dna2.Genes.Count);
         }
 
 

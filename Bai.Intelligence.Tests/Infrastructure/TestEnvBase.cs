@@ -25,7 +25,7 @@ namespace Bai.Intelligence.Tests.Infrastructure
             {
                 InputCount = 3, 
                 OutputCount = 1,
-                Chromosomes = new []{ CreateSimpleChromosome() }
+                Chromosomes = new List<Chromosome> { CreateSimpleChromosome() }
             };
             return result;
         }
@@ -43,7 +43,7 @@ namespace Bai.Intelligence.Tests.Infrastructure
         {
             var result = new NeuronDna
                          {
-                             Genes = CreateSimpleNeuronGenes().ToArray()
+                             Genes = CreateSimpleNeuronGenes()
                          };
             return result;
         }
@@ -55,7 +55,7 @@ namespace Bai.Intelligence.Tests.Infrastructure
                             new CreateNeuronGene(),
                             new AddInputsGene
                             {
-                                Inputs = new[]
+                                Inputs = new List<NeuronInput>
                                          {
                                              new NeuronInput {SourceIndex = 2, Weight = 1.1F},
                                              new NeuronInput {SourceIndex = 0, Weight = 2.2F},
@@ -81,7 +81,7 @@ namespace Bai.Intelligence.Tests.Infrastructure
                          {
                              InputCount = 3,
                              OutputCount = 1,
-                             Chromosomes = new[] { Create2LayersNetworkChromosome() }
+                             Chromosomes = new List<Chromosome> { Create2LayersNetworkChromosome() }
                          };
             return result;
         }
@@ -100,7 +100,7 @@ namespace Bai.Intelligence.Tests.Infrastructure
         {
             var result = new NeuronDna
                          {
-                             Genes = Create2LayersNetworkGenes().ToArray()
+                             Genes = Create2LayersNetworkGenes()
                          };
             return result;
         }
@@ -113,7 +113,7 @@ namespace Bai.Intelligence.Tests.Infrastructure
                             new CreateNeuronGene(),
                             new AddInputsGene
                             {
-                                Inputs = new[]
+                                Inputs = new List<NeuronInput>
                                          {
                                              new NeuronInput {SourceIndex = 0, Weight = 0.1F},
                                              new NeuronInput {SourceIndex = 1, Weight = 0.2F},
@@ -128,7 +128,7 @@ namespace Bai.Intelligence.Tests.Infrastructure
                             new CreateNeuronGene(),
                             new AddInputsGene
                             {
-                                Inputs = new[]
+                                Inputs = new List<NeuronInput>
                                          {
                                              new NeuronInput {SourceIndex = 0, Weight = 0.4F},
                                              new NeuronInput {SourceIndex = 1, Weight = 0.5F},
@@ -144,7 +144,7 @@ namespace Bai.Intelligence.Tests.Infrastructure
                             new CreateNeuronGene(),
                             new AddInputsGene
                             {
-                                Inputs = new[]
+                                Inputs = new List<NeuronInput>
                                          {
                                              new NeuronInput {SourceIndex = 0, Weight = 0.7F},
                                              new NeuronInput {SourceIndex = 1, Weight = 0.8F},
@@ -161,7 +161,7 @@ namespace Bai.Intelligence.Tests.Infrastructure
                             new CreateNeuronGene(),
                             new AddInputsGene
                             {
-                                Inputs = new[]
+                                Inputs = new List<NeuronInput>
                                          {
                                              new NeuronInput {SourceIndex = 4, Weight = 1.1F},
                                              new NeuronInput {SourceIndex = 5, Weight = 2.2F},
@@ -189,7 +189,7 @@ namespace Bai.Intelligence.Tests.Infrastructure
                          {
                              InputCount = 3,
                              OutputCount = 3,
-                             Chromosomes = new[] { CreateWithManyToManyFunctionChromosome() }
+                             Chromosomes = new List<Chromosome> { CreateWithManyToManyFunctionChromosome() }
                          };
             return result;
         }
@@ -208,7 +208,7 @@ namespace Bai.Intelligence.Tests.Infrastructure
         {
             var result = new NeuronDna
                          {
-                             Genes = CreateWithManyToManyFunctionGenes().ToArray()
+                             Genes = CreateWithManyToManyFunctionGenes()
                          };
             return result;
         }
@@ -220,7 +220,7 @@ namespace Bai.Intelligence.Tests.Infrastructure
                             new CreateNeuronGene(),
                             new AddInputsGene
                             {
-                                Inputs = new[]
+                                Inputs = new List<NeuronInput>
                                          {
                                              new NeuronInput {SourceIndex = 2, Weight = 1.1F},
                                              new NeuronInput {SourceIndex = 0, Weight = 2.2F},

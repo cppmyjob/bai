@@ -30,8 +30,8 @@ namespace Bai.Intelligence.Organism
                 var woman = chromosome.Dna2;
                 var man = chromosome.Dna1;
 
-                var phenotypeGenes = new List<BaseGene>(woman.Genes.Length);
-                for (var j = 0; j < woman.Genes.Length; j++)
+                var phenotypeGenes = new List<BaseGene>(woman.Genes.Count);
+                for (var j = 0; j < woman.Genes.Count; j++)
                 {
                     var womanGene = woman.Genes[j];
                     var manGene = man.Genes[j];
@@ -39,7 +39,7 @@ namespace Bai.Intelligence.Organism
                     phenotypeGenes.Add(gene);
                 }
                 var phenotypeDna = new NeuronDna();
-                phenotypeDna.Genes = phenotypeGenes.ToArray();
+                phenotypeDna.Genes = phenotypeGenes;
                 result.Add(phenotypeDna);
             }
 

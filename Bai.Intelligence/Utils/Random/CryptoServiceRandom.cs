@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
-using System.Text;
 using Bai.Intelligence.Interfaces;
 
-namespace Bai.Intelligence.Random
+namespace Bai.Intelligence.Utils.Random
 {
     public class CryptoServiceRandom : IRandom
     {

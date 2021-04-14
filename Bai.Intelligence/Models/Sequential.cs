@@ -1,17 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Bai.Intelligence.Data;
+using Bai.Intelligence.Interfaces;
 using Bai.Intelligence.Models.Layers;
 using Bai.Intelligence.Models.Optimizers;
 using Bai.Intelligence.Organism.Definition;
 using Bai.Intelligence.Organism.Definition.Dna;
 using Bai.Intelligence.Organism.Definition.Dna.Genes;
+using Bai.Intelligence.Utils;
 
 namespace Bai.Intelligence.Models
 {
     public class Sequential
     {
+        private readonly ILogger _logger;
+
+        public Sequential(ILogger logger = null)
+        {
+            if (logger != null)
+            {
+                _logger = logger;
+            }
+            else
+            {
+                _logger = new ConsoleLogger();
+            }
+            
+        }
+
         public List<Layer> Layers { get; } = new List<Layer>();
 
         public NetworkDefinition NetworkDefinition { get; private set; }
@@ -24,7 +42,7 @@ namespace Bai.Intelligence.Models
                 // TODO add correct exception
                 throw new Exception("Model is not compiled");
 
-            _optimizer.Run(NetworkDefinition);
+            _optimizer.Run(_logger, NetworkDefinition);
         }
 
         public void Compile(Optimizer optimizer)
@@ -57,16 +75,16 @@ namespace Bai.Intelligence.Models
             {
                 InputCount = firstInputCount,
                 OutputCount = finalOutputCount,
-                Chromosomes = new Chromosome[] {
+                Chromosomes = new List<Chromosome> {
                                         new Chromosome
                                         {
                                             Dna1 = new NeuronDna
                                                   {
-                                                      Genes = genes.ToArray()
+                                                      Genes = genes.ToList()
                                                   },
                                             Dna2 = new NeuronDna
                                                   {
-                                                      Genes = genes.ToArray()
+                                                      Genes = genes.ToList()
                                                   },
                                         }
                                     }

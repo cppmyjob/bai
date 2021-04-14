@@ -51,7 +51,7 @@ namespace Bai.Intelligence.Tests.Models
             var gene01 = genes[offset + 1];
             Assert.IsInstanceOf<AddInputsGene>(gene01);
             var inputGene = (AddInputsGene)gene01;
-            Assert.AreEqual(3, inputGene.Inputs.Length);
+            Assert.AreEqual(3, inputGene.Inputs.Count);
             Assert.AreEqual(0, inputGene.Inputs[0].SourceIndex);
             Assert.AreEqual(1, inputGene.Inputs[1].SourceIndex);
             Assert.AreEqual(2, inputGene.Inputs[2].SourceIndex);
@@ -95,7 +95,7 @@ namespace Bai.Intelligence.Tests.Models
             var gene01 = genes[offset + 1];
             Assert.IsInstanceOf<AddInputsGene>(gene01);
             var inputGene = (AddInputsGene)gene01;
-            Assert.AreEqual(2, inputGene.Inputs.Length);
+            Assert.AreEqual(2, inputGene.Inputs.Count);
             Assert.AreEqual(5, inputGene.Inputs[0].SourceIndex);
             Assert.AreEqual(6, inputGene.Inputs[1].SourceIndex);
 
@@ -116,7 +116,7 @@ namespace Bai.Intelligence.Tests.Models
             var gene01 = genes[offset + 1];
             Assert.IsInstanceOf<AddInputsGene>(gene01);
             var inputGene = (AddInputsGene)gene01;
-            Assert.AreEqual(3, inputGene.Inputs.Length);
+            Assert.AreEqual(3, inputGene.Inputs.Count);
             Assert.AreEqual(0, inputGene.Inputs[0].SourceIndex);
             Assert.AreEqual(1, inputGene.Inputs[1].SourceIndex);
             Assert.AreEqual(2, inputGene.Inputs[2].SourceIndex);

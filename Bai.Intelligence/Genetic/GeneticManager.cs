@@ -4,17 +4,15 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Bai.Intelligence.Interfaces;
 using Bai.Intelligence.Organism.Definition;
-using Bai.Intelligence.Random;
+using Bai.Intelligence.Utils.Random;
 
 namespace Bai.Intelligence.Genetic
 {
-    public abstract class GeneticManager
+    public abstract class GeneticManager<TGeneticItem>
     {
         private readonly GeneticInitData _initData;
-
-        private NetworkDefinition[] _men;
-        private NetworkDefinition[] _women;
 
         protected GeneticManager(GeneticInitData initData)
         {
@@ -23,50 +21,31 @@ namespace Bai.Intelligence.Genetic
 
         public void Execute()
         {
-            InitPopulation();
-            for (int i = 0; i < _initData.RepeatNumber; i++)
-            {
-                Process();
-            }
-        }
-
-        // protected abstract TGeneticItem CreateItem();
-
-        private void InitPopulation()
-        {
-            _men = new NetworkDefinition[_initData.ItemsNumber];
-            _women = new NetworkDefinition[_initData.ItemsNumber];
-            if (_initData.Men != null)
-            {
-                Array.Copy(_initData.Men, _men, _initData.Men.Length);
-                CreatingPopulation(_men, _initData.Men.Length);
-            }
-            else
-                CreatingPopulation(_men, 0);
-
-            if (_initData.Women != null)
-            {
-                Array.Copy(_initData.Women, _women, _initData.Women.Length);
-                CreatingPopulation(_women, _initData.Women.Length);
-            }
-            else
-                CreatingPopulation(_women, 0);
-        }
-
-        private void CreatingPopulation(NetworkDefinition[] men, int from)
-        {
-            for (var i = from; i < men.Length; i++)
-            {
-
-                //var item = InternalCreateItem();
-                //FillValues(item);
-                //men[i] = item;
-            }
-        }
-
-        private void Process()
-        {
             using var random = RandomFactory.Instance.Create();
+            InitPopulation(random);
+            for (var i = 0; i < _initData.RepeatNumber; i++)
+            {
+                Process(random);
+            }
+        }
+
+        protected abstract void InitPopulation(IRandom random);
+
+        protected virtual void CreatingPopulation(IRandom random, TGeneticItem[] items, int from)
+        {
+            for (var i = from; i < items.Length; i++)
+            {
+                TGeneticItem item = CreateItem(random);
+                items[i] = item;
+            }
+        }
+
+        protected abstract TGeneticItem CreateItem(IRandom random);
+
+        protected abstract void Reproduction();
+
+        private void Process(IRandom random)
+        {
             Reproduction();
             Selection();
         }
@@ -91,35 +70,35 @@ namespace Bai.Intelligence.Genetic
         //    return parallelOption;
         //}
 
-        private void Reproduction()
-        {
-            var gSurveyI = -1;
+        //private void Reproduction()
+        //{
+        //    var gSurveyI = -1;
 
 
-            //Parallel.For(0, DataObject.CommandInitData.ItemsCount - DataObject.CommandInitData.SurviveCount,
-            //    GetParallelOptions(),
-            //    (i) =>
-            //    {
-            //        var surveyI = Interlocked.Increment(ref gSurveyI) % DataObject.CommandInitData.SurviveCount;
+        //    //Parallel.For(0, DataObject.CommandInitData.ItemsCount - DataObject.CommandInitData.SurviveCount,
+        //    //    GetParallelOptions(),
+        //    //    (i) =>
+        //    //    {
+        //    //        var surveyI = Interlocked.Increment(ref gSurveyI) % DataObject.CommandInitData.SurviveCount;
 
-            //        var firstParent = _itemsArray[surveyI];
-            //        //var secondParentIndex = Random.Next(DataObject.CellInitData.SurviveCount);
-            //        var secondParentIndex = Random.Next(DataObject.CommandInitData.ItemsCount);
-            //        var secondParent = _itemsArray[secondParentIndex];
-            //        var child = CreateChild(firstParent, secondParent);
-            //        if (child != null)
-            //        {
-            //            Mutation(child);
-            //        }
-            //        else
-            //        {
-            //            child = InternalCreateItem();
-            //            FillValues(child);
-            //        }
-            //        _itemsArray[i + DataObject.CommandInitData.SurviveCount] = child;
+        //    //        var firstParent = _itemsArray[surveyI];
+        //    //        //var secondParentIndex = Random.Next(DataObject.CellInitData.SurviveCount);
+        //    //        var secondParentIndex = Random.Next(DataObject.CommandInitData.ItemsCount);
+        //    //        var secondParent = _itemsArray[secondParentIndex];
+        //    //        var child = CreateChild(firstParent, secondParent);
+        //    //        if (child != null)
+        //    //        {
+        //    //            Mutation(child);
+        //    //        }
+        //    //        else
+        //    //        {
+        //    //            child = InternalCreateItem();
+        //    //            FillValues(child);
+        //    //        }
+        //    //        _itemsArray[i + DataObject.CommandInitData.SurviveCount] = child;
 
 
-            //    });
-        }
+        //    //    });
+        //}
     }
 }
