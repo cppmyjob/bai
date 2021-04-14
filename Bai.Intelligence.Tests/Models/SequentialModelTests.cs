@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using Bai.Intelligence.Definition.Dna.Genes;
-using Bai.Intelligence.Definition.Dna.Genes.Functions;
 using Bai.Intelligence.Models;
 using Bai.Intelligence.Models.Layers;
+using Bai.Intelligence.Organism.Definition.Dna.Genes;
+using Bai.Intelligence.Organism.Definition.Dna.Genes.Functions;
 using Bai.Intelligence.Tests.Infrastructure;
 using NUnit.Framework;
 
@@ -28,7 +28,7 @@ namespace Bai.Intelligence.Tests.Models
             model.Layers.Add(new Dense(2, activation: ActivationType.Softmax));
 
             // ACT
-            model.Compile();
+            model.Compile(_env.Optimizer);
 
             // ASSERT
             Assert.IsNotNull(model.NetworkDefinition);
@@ -52,7 +52,7 @@ namespace Bai.Intelligence.Tests.Models
             model.Layers.Add(new Dense(3, inputDim: 4, activation: ActivationType.Sigmoid));
 
             // ACT
-            model.Compile();
+            model.Compile(_env.Optimizer);
 
             // ASSERT
             Assert.IsNotNull(model.NetworkDefinition);
@@ -78,7 +78,7 @@ namespace Bai.Intelligence.Tests.Models
             model.Layers.Add(new Dense(2, activation: ActivationType.Sigmoid));
 
             // ACT
-            model.Compile();
+            model.Compile(_env.Optimizer);
 
             // ASSERT
             Assert.IsNotNull(model.NetworkDefinition);
@@ -104,7 +104,7 @@ namespace Bai.Intelligence.Tests.Models
             model.Layers.Add(new Dense(1, activation: ActivationType.Sigmoid));
 
             // ACT
-            model.Compile();
+            model.Compile(_env.Optimizer);
 
             // ASSERT
             Assert.IsNotNull(model.NetworkDefinition);
@@ -129,7 +129,7 @@ namespace Bai.Intelligence.Tests.Models
             model.Layers.Add(new Dense(2, inputDim: 3, activation: ActivationType.Softmax));
 
             // ACT
-            model.Compile();
+            model.Compile(_env.Optimizer);
 
             // ASSERT
             Assert.IsNotNull(model.NetworkDefinition);

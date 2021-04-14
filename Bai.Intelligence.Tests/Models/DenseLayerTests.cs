@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Bai.Intelligence.Definition.Dna.Genes;
-using Bai.Intelligence.Definition.Dna.Genes.Functions;
 using Bai.Intelligence.Models;
 using Bai.Intelligence.Models.Layers;
+using Bai.Intelligence.Organism.Definition.Dna.Genes;
+using Bai.Intelligence.Organism.Definition.Dna.Genes.Functions;
 using Bai.Intelligence.Tests.Infrastructure;
 using NUnit.Framework;
 

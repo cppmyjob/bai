@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Bai.Intelligence.Cpu;
-using Bai.Intelligence.Definition.Dna.Genes;
+using Bai.Intelligence.Organism.Definition.Dna.Genes;
 
 namespace Bai.Intelligence.Tests.Infrastructure.Stubs
 {

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using Bai.Intelligence.Data;
-using Bai.Intelligence.Definition;
-using Bai.Intelligence.Definition.Dna;
-using Bai.Intelligence.Definition.Dna.Genes;
 using Bai.Intelligence.Models.Layers;
+using Bai.Intelligence.Models.Optimizers;
+using Bai.Intelligence.Organism.Definition;
+using Bai.Intelligence.Organism.Definition.Dna;
+using Bai.Intelligence.Organism.Definition.Dna.Genes;
 
 namespace Bai.Intelligence.Models
 {
@@ -15,12 +16,18 @@ namespace Bai.Intelligence.Models
 
         public NetworkDefinition NetworkDefinition { get; private set; }
 
+        private Optimizer _optimizer;
+
         public void Fit(DataArray x, DataArray y)
         {
+            if (_optimizer == null)
+                // TODO add correct exception
+                throw new Exception("Model is not compiled");
 
+            _optimizer.Run(NetworkDefinition);
         }
 
-        public void Compile()
+        public void Compile(Optimizer optimizer)
         {
             if (Layers.Count == 0)
                 // TODO

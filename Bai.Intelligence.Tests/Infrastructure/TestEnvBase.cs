@@ -1,18 +1,21 @@
-﻿using Bai.Intelligence.Definition;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Bai.Intelligence.Cpu;
-using Bai.Intelligence.Definition.Dna;
-using Bai.Intelligence.Definition.Dna.Genes;
-using Bai.Intelligence.Definition.Dna.Genes.Functions;
+using Bai.Intelligence.Organism.Definition;
+using Bai.Intelligence.Organism.Definition.Dna;
+using Bai.Intelligence.Organism.Definition.Dna.Genes;
+using Bai.Intelligence.Organism.Definition.Dna.Genes.Functions;
+using Bai.Intelligence.Tests.Infrastructure.Stubs;
 
 namespace Bai.Intelligence.Tests.Infrastructure
 {
     public class TestEnvBase
     {
+        public OptimizerStub Optimizer = new OptimizerStub();
+
 
         #region Simple Neuron
 

@@ -1,6 +1,6 @@
-﻿using Bai.Intelligence.Definition.Dna;
+﻿using Bai.Intelligence.Organism.Definition.Dna;
 
-namespace Bai.Intelligence.Definition
+namespace Bai.Intelligence.Organism.Definition
 {
     public class Chromosome
     {

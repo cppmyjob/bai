@@ -1,4 +1,4 @@
-﻿namespace Bai.Intelligence.Definition
+﻿namespace Bai.Intelligence.Organism.Definition
 {
     public class NetworkDefinition
     {

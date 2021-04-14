@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Bai.Intelligence.Definition;
-using Bai.Intelligence.Definition.Dna;
-using Bai.Intelligence.Definition.Dna.Genes;
+﻿using System.Collections.Generic;
 using Bai.Intelligence.Interfaces;
+using Bai.Intelligence.Organism.Definition;
+using Bai.Intelligence.Organism.Definition.Dna;
+using Bai.Intelligence.Organism.Definition.Dna.Genes;
 
-namespace Bai.Intelligence.Genetic
+namespace Bai.Intelligence.Organism
 {
     public class PhenotypeCreator
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Bai.Intelligence.Function
+namespace Bai.Intelligence.Organism.Functions
 {
     public class SigmoidFunction : INeuronFunctionOneToOne
     {

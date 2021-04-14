@@ -1,6 +1,6 @@
 ﻿using Bai.Intelligence.Cpu;
 using Bai.Intelligence.Cpu.Runtime;
-using Bai.Intelligence.Function;
+using Bai.Intelligence.Organism.Functions;
 using Bai.Intelligence.Tests.Infrastructure;
 using NUnit.Framework;
 

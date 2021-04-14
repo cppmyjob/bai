@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Bai.Intelligence.Definition;
+using Bai.Intelligence.Organism.Definition;
 
 namespace Bai.Intelligence.Genetic
 {

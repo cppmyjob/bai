@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Bai.Intelligence.Function
+﻿namespace Bai.Intelligence.Organism.Functions
 {
     public class LinearFunction : INeuronFunctionOneToOne
     {

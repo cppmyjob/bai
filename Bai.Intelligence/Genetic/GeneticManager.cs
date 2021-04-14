@@ -4,19 +4,19 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Bai.Intelligence.Definition;
+using Bai.Intelligence.Organism.Definition;
 using Bai.Intelligence.Random;
 
 namespace Bai.Intelligence.Genetic
 {
-    public class GeneticManager
+    public abstract class GeneticManager
     {
         private readonly GeneticInitData _initData;
 
         private NetworkDefinition[] _men;
         private NetworkDefinition[] _women;
 
-        public GeneticManager(GeneticInitData initData)
+        protected GeneticManager(GeneticInitData initData)
         {
             _initData = initData;
         }
@@ -29,6 +29,8 @@ namespace Bai.Intelligence.Genetic
                 Process();
             }
         }
+
+        // protected abstract TGeneticItem CreateItem();
 
         private void InitPopulation()
         {
@@ -55,6 +57,7 @@ namespace Bai.Intelligence.Genetic
         {
             for (var i = from; i < men.Length; i++)
             {
+
                 //var item = InternalCreateItem();
                 //FillValues(item);
                 //men[i] = item;

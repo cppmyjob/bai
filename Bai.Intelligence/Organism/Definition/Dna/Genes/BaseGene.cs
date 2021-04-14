@@ -1,7 +1,6 @@
 ﻿using Bai.Intelligence.Cpu;
-using Bai.Intelligence.Interfaces;
 
-namespace Bai.Intelligence.Definition.Dna.Genes
+namespace Bai.Intelligence.Organism.Definition.Dna.Genes
 {
     public abstract class BaseGene
     {

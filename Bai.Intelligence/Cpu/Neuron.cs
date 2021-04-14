@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Bai.Intelligence.Function;
+using Bai.Intelligence.Organism.Functions;
 
 namespace Bai.Intelligence.Cpu
 {

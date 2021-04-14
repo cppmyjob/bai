@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using Bai.Intelligence.Cpu;
-using Bai.Intelligence.Function;
-using Bai.Intelligence.Interfaces;
+﻿using Bai.Intelligence.Cpu;
+using Bai.Intelligence.Organism.Functions;
 
-namespace Bai.Intelligence.Definition.Dna.Genes.Functions
+namespace Bai.Intelligence.Organism.Definition.Dna.Genes.Functions
 {
     public class AddSigmoidFunctionGene: BaseFunctionGene
     {

@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Bai.Intelligence.Cpu.Runtime;
-using Bai.Intelligence.Definition;
-using Bai.Intelligence.Definition.Dna;
-using Bai.Intelligence.Definition.Dna.Genes;
-using Bai.Intelligence.Function;
 using Bai.Intelligence.Genetic;
 using Bai.Intelligence.Interfaces;
+using Bai.Intelligence.Organism;
+using Bai.Intelligence.Organism.Definition;
+using Bai.Intelligence.Organism.Definition.Dna;
+using Bai.Intelligence.Organism.Definition.Dna.Genes;
+using Bai.Intelligence.Organism.Functions;
 using Bai.Intelligence.Random;
 
 namespace Bai.Intelligence.Cpu

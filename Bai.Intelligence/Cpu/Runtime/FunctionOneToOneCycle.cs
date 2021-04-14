@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Bai.Intelligence.Function;
+using Bai.Intelligence.Organism.Functions;
 
 namespace Bai.Intelligence.Cpu.Runtime
 {

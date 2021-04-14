@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Bai.Intelligence.Definition.Dna.Genes;
+using Bai.Intelligence.Organism.Definition.Dna.Genes;
 
 namespace Bai.Intelligence.Models.Layers
 {

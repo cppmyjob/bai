@@ -1,4 +1,4 @@
-﻿namespace Bai.Intelligence.Function
+﻿namespace Bai.Intelligence.Organism.Functions
 {
     public interface INeuronFunctionOneToOne : INeuronFunction
     {

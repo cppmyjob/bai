@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Bai.Intelligence.Function
+namespace Bai.Intelligence.Organism.Functions
 {
     // https://towardsdatascience.com/softmax-activation-function-explained-a7e1bc3ad60
     // http://rinterested.github.io/statistics/softmax.html
