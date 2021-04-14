@@ -30,8 +30,8 @@ namespace Bai.Intelligence.Tests.Infrastructure
         private Chromosome CreateSimpleChromosome()
         {
             var result = new Chromosome {
-                Man = CreateSimpleDna(), 
-                Woman = CreateSimpleDna()
+                Dna1 = CreateSimpleDna(), 
+                Dna2 = CreateSimpleDna()
             };
             return result;
         }
@@ -52,7 +52,6 @@ namespace Bai.Intelligence.Tests.Infrastructure
                             new CreateNeuronGene(),
                             new AddInputsGene
                             {
-                                Dominant = true,
                                 Inputs = new[]
                                          {
                                              new NeuronInput {SourceIndex = 2, Weight = 1.1F},
@@ -61,7 +60,6 @@ namespace Bai.Intelligence.Tests.Infrastructure
                                          }
                             },
                             new AddSigmoidFunctionGene {
-                                Dominant = true, 
                                 Alfa = 0.1F,
                                 OutputIndexes = new []{ 3 }
                             }
@@ -89,8 +87,8 @@ namespace Bai.Intelligence.Tests.Infrastructure
         {
             var result = new Chromosome
                          {
-                             Man = Create2LayersNetworkDna(),
-                             Woman = Create2LayersNetworkDna()
+                             Dna1 = Create2LayersNetworkDna(),
+                             Dna2 = Create2LayersNetworkDna()
                          };
             return result;
         }
@@ -112,7 +110,6 @@ namespace Bai.Intelligence.Tests.Infrastructure
                             new CreateNeuronGene(),
                             new AddInputsGene
                             {
-                                Dominant = true,
                                 Inputs = new[]
                                          {
                                              new NeuronInput {SourceIndex = 0, Weight = 0.1F},
@@ -121,7 +118,6 @@ namespace Bai.Intelligence.Tests.Infrastructure
                                          }
                             },
                             new AddSigmoidFunctionGene {
-                                                           Dominant = true,
                                                            Alfa = 0.11F,
                                                            OutputIndexes = new []{4}
                                                        },
@@ -129,7 +125,6 @@ namespace Bai.Intelligence.Tests.Infrastructure
                             new CreateNeuronGene(),
                             new AddInputsGene
                             {
-                                Dominant = true,
                                 Inputs = new[]
                                          {
                                              new NeuronInput {SourceIndex = 0, Weight = 0.4F},
@@ -138,7 +133,6 @@ namespace Bai.Intelligence.Tests.Infrastructure
                                          }
                             },
                             new AddSigmoidFunctionGene {
-                                                           Dominant = true,
                                                            Alfa = 0.22F,
                                                            OutputIndexes = new []{5}
                                                        },
@@ -147,7 +141,6 @@ namespace Bai.Intelligence.Tests.Infrastructure
                             new CreateNeuronGene(),
                             new AddInputsGene
                             {
-                                Dominant = true,
                                 Inputs = new[]
                                          {
                                              new NeuronInput {SourceIndex = 0, Weight = 0.7F},
@@ -156,7 +149,6 @@ namespace Bai.Intelligence.Tests.Infrastructure
                                          }
                             },
                             new AddSigmoidFunctionGene {
-                                                           Dominant = true,
                                                            Alfa = 0.33F,
                                                            OutputIndexes = new []{6}
                                                        },
@@ -166,7 +158,6 @@ namespace Bai.Intelligence.Tests.Infrastructure
                             new CreateNeuronGene(),
                             new AddInputsGene
                             {
-                                Dominant = true,
                                 Inputs = new[]
                                          {
                                              new NeuronInput {SourceIndex = 4, Weight = 1.1F},
@@ -175,7 +166,6 @@ namespace Bai.Intelligence.Tests.Infrastructure
                                          }
                             },
                             new AddSigmoidFunctionGene {
-                                                           Dominant = true,
                                                            Alfa = 0.44F,
                                                            OutputIndexes = new []{3}
                                                        },
@@ -205,8 +195,8 @@ namespace Bai.Intelligence.Tests.Infrastructure
         {
             var result = new Chromosome
                          {
-                             Man = CreateWithManyToManyFunctionDna(),
-                             Woman = CreateWithManyToManyFunctionDna()
+                             Dna1 = CreateWithManyToManyFunctionDna(),
+                             Dna2 = CreateWithManyToManyFunctionDna()
                          };
             return result;
         }
@@ -227,7 +217,6 @@ namespace Bai.Intelligence.Tests.Infrastructure
                             new CreateNeuronGene(),
                             new AddInputsGene
                             {
-                                Dominant = true,
                                 Inputs = new[]
                                          {
                                              new NeuronInput {SourceIndex = 2, Weight = 1.1F},
@@ -236,7 +225,6 @@ namespace Bai.Intelligence.Tests.Infrastructure
                                          }
                             },
                             new AddSoftMaxFunctionGene {
-                                                           Dominant = true,
                                                            OutputIndexes = new [] {3, 4, 5}
                                                        }
                         };

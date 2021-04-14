@@ -4,7 +4,7 @@ namespace Bai.Intelligence.Definition
 {
     public class Chromosome
     {
-        public NeuronDna Man { get; set; }
-        public NeuronDna Woman { get; set; }
+        public NeuronDna Dna1 { get; set; }
+        public NeuronDna Dna2 { get; set; }
     }
 }

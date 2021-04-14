@@ -289,11 +289,6 @@ namespace Bai.Intelligence.Cpu
             return result;
         }
 
-        private BaseGene GetFinalGene(BaseGene womanGene, BaseGene manGene)
-        {
-            return womanGene.Dominant ? womanGene : manGene;
-        }
-
         private class MapInputItem
         {
             public float Weight { get; set; }

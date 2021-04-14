@@ -29,8 +29,8 @@ namespace Bai.Intelligence.Genetic
 
             foreach (var chromosome in definition.Chromosomes)
             {
-                var woman = chromosome.Woman;
-                var man = chromosome.Man;
+                var woman = chromosome.Dna2;
+                var man = chromosome.Dna1;
 
                 var phenotypeGenes = new List<BaseGene>(woman.Genes.Length);
                 for (var j = 0; j < woman.Genes.Length; j++)

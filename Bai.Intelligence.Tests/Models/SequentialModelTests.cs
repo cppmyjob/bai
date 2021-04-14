@@ -35,8 +35,8 @@ namespace Bai.Intelligence.Tests.Models
             Assert.AreEqual(4, model.NetworkDefinition.InputCount);
             Assert.AreEqual(2, model.NetworkDefinition.OutputCount);
 
-            var manGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Man.Genes).ToArray();
-            var womanGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Woman.Genes).ToArray();
+            var manGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Dna1.Genes).ToArray();
+            var womanGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Dna2.Genes).ToArray();
 
             var expectedInputIndexes = new int[] { 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 6, 7, 8, 6, 7, 8, 9, 10 };
             var expectedOutputIndexes = new int[] { 6, 7, 8, 9, 10, 4, 5 };
@@ -59,8 +59,8 @@ namespace Bai.Intelligence.Tests.Models
             Assert.AreEqual(4, model.NetworkDefinition.InputCount);
             Assert.AreEqual(3, model.NetworkDefinition.OutputCount);
 
-            var manGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Man.Genes).ToArray();
-            var womanGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Woman.Genes).ToArray();
+            var manGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Dna1.Genes).ToArray();
+            var womanGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Dna2.Genes).ToArray();
 
             var expectedInputIndexes = new int[] { 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3 };
             var expectedOutputIndexes = new int[] { 4, 5, 6 };
@@ -85,8 +85,8 @@ namespace Bai.Intelligence.Tests.Models
             Assert.AreEqual(4, model.NetworkDefinition.InputCount);
             Assert.AreEqual(2, model.NetworkDefinition.OutputCount);
 
-            var manGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Man.Genes).ToArray();
-            var womanGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Woman.Genes).ToArray();
+            var manGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Dna1.Genes).ToArray();
+            var womanGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Dna2.Genes).ToArray();
 
             var expectedInputIndexes = new int[] { 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 6, 7, 8, 6, 7, 8 };
             var expectedOutputIndexes = new int[] { 6, 7, 8, 4, 5 };
@@ -111,8 +111,8 @@ namespace Bai.Intelligence.Tests.Models
             Assert.AreEqual(4, model.NetworkDefinition.InputCount);
             Assert.AreEqual(1, model.NetworkDefinition.OutputCount);
 
-            var manGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Man.Genes).ToArray();
-            var womanGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Woman.Genes).ToArray();
+            var manGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Dna1.Genes).ToArray();
+            var womanGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Dna2.Genes).ToArray();
 
             var expectedInputIndexes = new int[] { 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 5, 6, 7, 5, 6, 7, 8, 9 };
             var expectedOutputIndexes = new int[] { 5, 6, 7, 8, 9, 4 };
@@ -136,8 +136,8 @@ namespace Bai.Intelligence.Tests.Models
             Assert.AreEqual(3, model.NetworkDefinition.InputCount);
             Assert.AreEqual(2, model.NetworkDefinition.OutputCount);
 
-            var manGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Man.Genes).ToArray();
-            var womanGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Woman.Genes).ToArray();
+            var manGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Dna1.Genes).ToArray();
+            var womanGenes = model.NetworkDefinition.Chromosomes.SelectMany(t => t.Dna2.Genes).ToArray();
 
             var expectedInputIndexes = new int[] { 0, 1, 2, 0, 1, 2, 5, 6 };
             var expectedOutputIndexes = new int[] { 5, 6, 3, 4 };

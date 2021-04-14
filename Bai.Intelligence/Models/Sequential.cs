@@ -53,11 +53,11 @@ namespace Bai.Intelligence.Models
                 Chromosomes = new Chromosome[] {
                                         new Chromosome
                                         {
-                                            Man = new NeuronDna
+                                            Dna1 = new NeuronDna
                                                   {
                                                       Genes = genes.ToArray()
                                                   },
-                                            Woman = new NeuronDna
+                                            Dna2 = new NeuronDna
                                                   {
                                                       Genes = genes.ToArray()
                                                   },
