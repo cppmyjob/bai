@@ -1,19 +1,24 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Bai.Intelligence.Data
 {
-    public class DataArray
+    public class DataArray : IEnumerable<float[]>
     {
         private readonly int[] _dim;
-
-        public readonly List<float[]> _data;
+        private readonly List<float[]> _data;
         
         public DataArray(params int[] dim)
         {
             _dim = dim;
             _data = new List<float[]>();
+        }
+
+        public int[] GetDimension()
+        {
+            return _dim;
         }
 
         private DataArray(int[] dim, List<float[]> data)
@@ -58,11 +63,39 @@ namespace Bai.Intelligence.Data
             }
         }
 
+        public void AddRange(List<byte[]> data)
+        {
+            // TODO check dimensions
+            foreach (var item in data)
+            {
+                var floatData = new float[item.Length];
+                for (var i = 0; i < item.Length; i++)
+                {
+                    floatData[i] = (float)item[i];
+                }
+                Add(floatData);
+            }
+        }
+
+        public void AddRange(List<byte> data)
+        {
+            // TODO check dimensions
+            foreach (var item in data)
+            {
+                var floatData = new float[]
+                                {
+                                    (float) item
+                                };
+                
+                Add(floatData);
+            }
+        }
+
+
         public void Add(float[] data)
         {
             _data.Add(data);
         }
-
 
         public static DataArray operator /(DataArray a, float value)
         {
@@ -72,15 +105,26 @@ namespace Bai.Intelligence.Data
             }
 
             var data = new List<float[]>();
-            foreach (var row in data)
+            foreach (var row in a._data)
             {
                 var newRow = new float[row.Length];
                 for (int i = 0; i < row.Length; i++)
                 {
                     newRow[i] = row[i] / value;
                 }
+                data.Add(newRow);
             }
             return new DataArray(a._dim, data);
+        }
+
+        public IEnumerator<float[]> GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

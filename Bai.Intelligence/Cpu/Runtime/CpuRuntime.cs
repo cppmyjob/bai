@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Bai.Intelligence.Data;
 using Bai.Intelligence.Interfaces;
 
 namespace Bai.Intelligence.Cpu.Runtime
@@ -25,7 +26,7 @@ namespace Bai.Intelligence.Cpu.Runtime
             InputMemory = inputMemory;
         }
 
-        public float[] Compute(RuntimeInput[] inputs)
+        public float[] Compute(InputData[] inputs)
         {
             var offset = 0;
             foreach (var input in inputs)

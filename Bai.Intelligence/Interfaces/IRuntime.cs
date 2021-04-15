@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Bai.Intelligence.Data;
 
 namespace Bai.Intelligence.Interfaces
 {
 
-    public class RuntimeInput
-    {
-        public int Offset { get; set; }
-        public int Length { get; set; }
-    }
-
     public interface IRuntime
     {
-        float[] Compute(RuntimeInput[] inputs);
+        void SetInputMemory(float[] inputMemory);
+        float[] Compute(InputData[] inputs);
     }
 }

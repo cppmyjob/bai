@@ -7,17 +7,17 @@ namespace Bai.Intelligence.Genetic
 {
     public class GeneticInitData
     {
-        public GeneticInitData(int itemsNumber, int surviveNumber, int repeatNumber, int processorsNumber)
+        public GeneticInitData(int itemsNumber, int surviveNumber, int repeatNumber, int processorCoreNumber = -1)
         {
             ItemsNumber = itemsNumber;
             SurviveNumber = surviveNumber;
             RepeatNumber = repeatNumber;
-            ProcessorsNumber = processorsNumber;
+            ProcessorCoreNumber = processorCoreNumber;
 
             if (SurviveNumber > ItemsNumber)
                 throw new ArgumentException("Survive Number > Person Number");
             if (SurviveNumber < 1)
-                throw new ArgumentException("Survive Numbe < 1");
+                throw new ArgumentException("Survive Number < 1");
             if (ItemsNumber < 2)
                 throw new ArgumentException("Person Number < 2");
         }
@@ -25,7 +25,7 @@ namespace Bai.Intelligence.Genetic
         public int ItemsNumber { get; }
         public int SurviveNumber { get; }
         public int RepeatNumber { get; }
-        public int ProcessorsNumber { get; }
+        public int ProcessorCoreNumber { get; }
 
         public int InputCount { get; set; }
         public int OutputCount { get; set; }

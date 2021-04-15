@@ -19,7 +19,7 @@ namespace Bai.Intelligence.Genetic
             _initData = initData;
         }
 
-        public void Execute()
+        public virtual void Execute()
         {
             using var random = RandomFactory.Instance.Create();
             InitPopulation(random);
@@ -42,18 +42,30 @@ namespace Bai.Intelligence.Genetic
 
         protected abstract TGeneticItem CreateItem(IRandom random);
 
-        protected abstract void Reproduction();
+        protected abstract void Reproduction(IRandom random);
+        protected abstract void Selection();
+
+        protected ParallelOptions GetParallelOptions()
+        {
+            var parallelOption = new ParallelOptions();
+
+            if (_initData.ProcessorCoreNumber >= 1)
+            {
+                parallelOption.MaxDegreeOfParallelism = _initData.ProcessorCoreNumber;
+            }
+            else
+            {
+                parallelOption.MaxDegreeOfParallelism = -1;
+            }
+            return parallelOption;
+        }
 
         private void Process(IRandom random)
         {
-            Reproduction();
+            Reproduction(random);
             Selection();
         }
 
-        private void Selection()
-        {
-            
-        }
 
         //private ParallelOptions GetParallelOptions()
         //{

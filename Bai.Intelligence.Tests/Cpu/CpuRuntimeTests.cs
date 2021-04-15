@@ -1,6 +1,7 @@
 using System.Linq;
 using Bai.Intelligence.Cpu;
 using Bai.Intelligence.Cpu.Runtime;
+using Bai.Intelligence.Data;
 using Bai.Intelligence.Interfaces;
 using Bai.Intelligence.Tests.Infrastructure;
 using NUnit.Framework;
@@ -27,7 +28,7 @@ namespace Bai.Intelligence.Tests.Cpu
             runtime.SetInputMemory(memory);
 
             // ACT
-            var input = new RuntimeInput
+            var input = new InputData
             {
                 Offset = 0,
                 Length = memory.Length
@@ -51,7 +52,7 @@ namespace Bai.Intelligence.Tests.Cpu
             runtime.SetInputMemory(memory);
 
             // ACT
-            var input = new RuntimeInput
+            var input = new InputData
             {
                 Offset = 0,
                 Length = memory.Length
@@ -75,7 +76,7 @@ namespace Bai.Intelligence.Tests.Cpu
             runtime.SetInputMemory(memory);
 
             // ACT
-            var input = new RuntimeInput
+            var input = new InputData
                         {
                             Offset = 0,
                             Length = memory.Length
@@ -99,7 +100,7 @@ namespace Bai.Intelligence.Tests.Cpu
             runtime.SetInputMemory(memory);
 
             // ACT
-            var input = new RuntimeInput
+            var input = new InputData
                         {
                             Offset = 0,
                             Length = memory.Length

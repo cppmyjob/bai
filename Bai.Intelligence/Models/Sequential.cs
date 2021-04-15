@@ -42,7 +42,7 @@ namespace Bai.Intelligence.Models
                 // TODO add correct exception
                 throw new Exception("Model is not compiled");
 
-            _optimizer.Run(_logger, NetworkDefinition);
+            _optimizer.Run(_logger, NetworkDefinition, x, y);
         }
 
         public void Compile(Optimizer optimizer)
@@ -50,6 +50,7 @@ namespace Bai.Intelligence.Models
             if (Layers.Count == 0)
                 // TODO
                 throw new Exception();
+            _optimizer = optimizer;
 
             var firstInputCount = Layers[0].GetInputCount();
             var finalOutputCount = Layers[Layers.Count - 1].GetOutputCount();
