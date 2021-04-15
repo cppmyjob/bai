@@ -238,27 +238,6 @@ namespace Bai.Intelligence.Cpu
             return cycle;
         }
 
-        //private SumCycle AddSumCycle(BuildRuntimeContext buildRuntimeContext, MultiCycle multiCycle)
-        //{
-        //    var cycle = new SumCycle(10);
-
-        //    var groups = multiCycle.Items.GroupBy(t => t.NeuronIndex, item => item);
-
-        //    foreach (var group in groups)
-        //    {
-        //        var indexes = group.Select(t => t.OutputIndex).ToArray();
-        //        cycle.Items.Add(new SumCycle.Item
-        //                        {
-        //                            Indexes = indexes,
-        //                            NeuronIndex = group.Key,
-        //                            ResultIndex = buildRuntimeContext.TempMemoryIndex++
-        //                        });
-        //    }
-
-        //    buildRuntimeContext.RuntimeCycles.Add(cycle);
-        //    return cycle;
-        //}
-
         private SumCycle AddSumCycle(BuildRuntimeContext buildRuntimeContext, List<CyclePreviousCycleData> inputCycleData)
         {
             var cycle = new SumCycle(10);

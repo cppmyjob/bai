@@ -7,11 +7,11 @@ namespace Bai.Intelligence.Cpu.Runtime
 {
     public class SumCycle : Cycle
     {
-        public class Item
+        public struct Item
         {
-            public int[] Indexes { get; set; }
-            public int NeuronIndex { get; set; }
-            public int ResultIndex { get; set; }
+            public int[] Indexes;
+            public int NeuronIndex;
+            public int ResultIndex;
         }
 
         public List<Item> Items { get; }
@@ -23,10 +23,17 @@ namespace Bai.Intelligence.Cpu.Runtime
 
         public override void Compute(float[] tempMemory)
         {
-            foreach (var item in Items)
+            var lengthI = Items.Count;
+            for (var i = 0; i < lengthI; i++)
             {
-                var sum = item.Indexes.Sum(t => tempMemory[t]);
-                tempMemory[item.ResultIndex] = sum;
+                var item = Items[i];
+                double sum = 0;
+                var lengthJ = item.Indexes.Length;
+                for (var j = 0; j < lengthJ; j++)
+                {
+                    sum += tempMemory[item.Indexes[j]];
+                }
+                tempMemory[item.ResultIndex] = (float)sum;
             }
         }
     }

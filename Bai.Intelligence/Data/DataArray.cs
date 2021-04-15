@@ -55,7 +55,7 @@ namespace Bai.Intelligence.Data
             Add(floatData);
         }
 
-        public void AddRange(List<byte[,]> data)
+        public void AddRange(IEnumerable<byte[,]> data)
         {
             foreach (var item in data)
             {
@@ -63,7 +63,7 @@ namespace Bai.Intelligence.Data
             }
         }
 
-        public void AddRange(List<byte[]> data)
+        public void AddRange(IEnumerable<byte[]> data)
         {
             // TODO check dimensions
             foreach (var item in data)
@@ -77,7 +77,7 @@ namespace Bai.Intelligence.Data
             }
         }
 
-        public void AddRange(List<byte> data)
+        public void AddRange(IEnumerable<byte> data)
         {
             // TODO check dimensions
             foreach (var item in data)

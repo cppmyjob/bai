@@ -150,7 +150,7 @@ namespace Bai.Intelligence.Organism.Genetic
         {
             if (person.Fitness < 0.0 || person.Fitness > 0.0)
                 return;
-            person.Fitness = _fitnessFunction.Calculate(_inputTrainX, _inputTrainX, person.Definition);
+            person.Fitness = _fitnessFunction.Calculate(_inputTrainX, _inputTrainY, person.Definition);
         }
 
         private void ReproducePerson(IRandom random, Crossover crossover, OrganismGeneticItem[] oldParents1, OrganismGeneticItem[] oldParents2,

@@ -12,7 +12,7 @@ namespace Bai.Intelligence.Models.Optimizers
     {
         public override void Run(ILogger logger, NetworkDefinition networkDefinition, DataArray x, DataArray y)
         {
-            var initData = new GeneticInitData(100, 30, 100, 1);
+            var initData = new GeneticInitData(10, 3, 10, 1);
             var manager = new OrganismGeneticManager(initData, networkDefinition, x, y,
                 new AccuracyFitnessFunction());
             manager.Execute();

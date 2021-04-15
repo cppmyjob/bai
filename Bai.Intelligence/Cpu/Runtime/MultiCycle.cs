@@ -6,12 +6,12 @@ namespace Bai.Intelligence.Cpu.Runtime
 {
     public class MultiCycle : Cycle
     {
-        public class Item
+        public struct Item
         {
-            public float Weight { get; set; }
-            public int SourceIndex { get; set; }
-            public int OutputIndex { get; set; }
-            public int NeuronIndex { get; set; }
+            public float Weight;
+            public int SourceIndex;
+            public int OutputIndex;
+            public int NeuronIndex;
         }
 
         public List<Item> Items { get; } 
@@ -23,8 +23,10 @@ namespace Bai.Intelligence.Cpu.Runtime
 
         public override void Compute(float[] tempMemory)
         {
-            foreach (var item in Items)
+            var length = Items.Count;
+            for (var i = 0; i < length; i++)
             {
+                var item = Items[i];
                 tempMemory[item.OutputIndex] = item.Weight * tempMemory[item.SourceIndex];
             }
         }
