@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Bai.Intelligence.Cpu;
+using Bai.Intelligence.Cpu.Runtime;
 using Bai.Intelligence.Data;
 using Bai.Intelligence.Genetic;
 using Bai.Intelligence.Organism.Definition;
@@ -43,6 +44,9 @@ namespace Bai.Intelligence.Organism.Genetic
                 ts.Hours, ts.Minutes, ts.Seconds,
                 ts.Milliseconds / 10);
             Console.WriteLine("Calculate RunTime " + elapsedTime);
+
+            Console.WriteLine("MultiCycle.Count " + MultiCycle.Count);
+            
 
             var allCount = trainX.Data.Length / trainX.FrameLength;
             return (float)meanSum / allCount;
