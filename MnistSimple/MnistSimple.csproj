@@ -9,13 +9,4 @@
     <ProjectReference Include="..\Bai.Intelligence.DataSets\Bai.Intelligence.DataSets.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="t10k-labels-idx1-ubyte">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="train-labels-idx1-ubyte">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

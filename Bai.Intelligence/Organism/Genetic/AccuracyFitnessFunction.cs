@@ -45,9 +45,6 @@ namespace Bai.Intelligence.Organism.Genetic
                 ts.Milliseconds / 10);
             Console.WriteLine("Calculate RunTime " + elapsedTime);
 
-            Console.WriteLine("MultiCycle.Count " + MultiCycle.Count);
-            
-
             var allCount = trainX.Data.Length / trainX.FrameLength;
             return (float)meanSum / allCount;
         }

@@ -20,14 +20,13 @@ namespace Bai.Intelligence.Tests.Cpu
         {
             // ARRANGE
             var definition = _env.Create2LayersNetwork();
-            var inputOutputCount = definition.InputCount + 4;
 
             // ACT
             var builder = new CpuBuilder();
             var runtime = (CpuRuntime)builder.Build(definition);
 
             // ASSERT
-            Assert.AreEqual(inputOutputCount + 16, runtime.TempMemory.Length);
+            Assert.AreEqual(11, runtime.TempMemory.Length);
         }
 
         [Test]
@@ -41,7 +40,7 @@ namespace Bai.Intelligence.Tests.Cpu
             var runtime = (CpuRuntime)builder.Build(definition);
 
             // ASSERT
-            Assert.AreEqual(6, runtime.Cycles.Count);
+            Assert.AreEqual(4, runtime.Cycles.Count);
         }
     }
 }

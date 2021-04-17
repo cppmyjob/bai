@@ -17,6 +17,15 @@ namespace MnistSimple
     {
         static void Main(string[] args)
         {
+            ImprovePerformance.Execute();
+            //ModelLearning();
+
+            //NativeTest();
+            //VectorTest();
+        }
+
+        private static void ModelLearning()
+        {
             var data = FashionMnist.LoadData();
             var trainX = new DataArray(784);
 
@@ -37,9 +46,6 @@ namespace MnistSimple
             model.Compile(optimizer);
 
             model.Fit(trainX, trainY);
-
-            //NativeTest();
-            //VectorTest();
         }
 
         private static void VectorTest()
