@@ -36,5 +36,13 @@ namespace Bai.Intelligence.Organism.Definition
                 chromosome.RandomizeValues(random);
             }
         }
+
+        public void Mutate(IRandom random)
+        {
+            foreach (var chromosome in Chromosomes)
+            {
+                chromosome.Mutate(random);
+            }
+        }
     }
 }

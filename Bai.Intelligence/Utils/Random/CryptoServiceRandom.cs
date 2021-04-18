@@ -21,7 +21,7 @@ namespace Bai.Intelligence.Utils.Random
             //byte[] b = new byte[4];
             //_random.GetBytes(b);
             //return (double)BitConverter.ToUInt32(b, 0) / UInt32.MaxValue;
-            lock (_lightRandom)
+            //lock (_lightRandom)
             {
                 return _lightRandom.NextDouble();
             }
@@ -30,7 +30,7 @@ namespace Bai.Intelligence.Utils.Random
         public int Next(int maxValue)
         {
             //return (int)(System.Math.Round(NextDouble() * (maxValue - 1)));
-            lock (_lightRandom)
+            //lock (_lightRandom)
             {
                 return _lightRandom.Next(maxValue);
             }

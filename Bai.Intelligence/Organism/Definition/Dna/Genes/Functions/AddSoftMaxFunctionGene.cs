@@ -27,5 +27,9 @@ namespace Bai.Intelligence.Organism.Definition.Dna.Genes.Functions
             // TODO for Outputs
         }
 
+        public override void Mutate(IRandom random)
+        {
+            // TODO for Outputs
+        }
     }
 }

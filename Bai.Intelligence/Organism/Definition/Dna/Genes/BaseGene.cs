@@ -8,6 +8,7 @@ namespace Bai.Intelligence.Organism.Definition.Dna.Genes
         public abstract void Build(BuilderContext context);
         public abstract BaseGene Clone();
         public abstract void RandomizeValues(IRandom random);
+        public abstract void Mutate(IRandom random);
     }
 
 }

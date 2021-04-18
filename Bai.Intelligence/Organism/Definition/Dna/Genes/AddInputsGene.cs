@@ -38,5 +38,19 @@ namespace Bai.Intelligence.Organism.Definition.Dna.Genes
             }
         }
 
+        public override void Mutate(IRandom random)
+        {
+            var limit2 = (InitMaxWeight - InitMinWeight).Value;
+            var limit = limit2 / 2;
+
+            var count = (int) (Inputs.Count * random.NextDouble());
+            for (int i = 0; i < count; i++)
+            {
+                var index = random.Next(Inputs.Count);
+                Inputs[index].Weight = (float)(random.NextDouble() * limit2 - limit);
+            }
+        }
+
+
     }
 }

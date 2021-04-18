@@ -21,5 +21,11 @@ namespace Bai.Intelligence.Organism.Definition
             Dna1.RandomizeValues(random);
             Dna2.RandomizeValues(random);
         }
+
+        public void Mutate(IRandom random)
+        {
+            Dna1.Mutate(random);
+            Dna2.Mutate(random);
+        }
     }
 }

@@ -30,5 +30,13 @@ namespace Bai.Intelligence.Organism.Definition.Dna
                 gene.RandomizeValues(random);
             }
         }
+
+        public void Mutate(IRandom random)
+        {
+            foreach (var gene in Genes)
+            {
+                gene.Mutate(random);
+            }
+        }
     }
 }

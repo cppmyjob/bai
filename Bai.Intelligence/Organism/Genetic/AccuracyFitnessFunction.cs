@@ -19,9 +19,6 @@ namespace Bai.Intelligence.Organism.Genetic
         {
             var builder = new CpuBuilder();
 
-            //var timeMeter = new TimeMeter(logger, "Calculate");
-            //timeMeter.Start();
-
             var timeMeter1 = new TimeMeter(logger, "Build");
             timeMeter1.Start();
             var runtime = builder.Build(item);

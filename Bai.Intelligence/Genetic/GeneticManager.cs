@@ -35,12 +35,12 @@ namespace Bai.Intelligence.Genetic
         protected virtual void CreatingPopulation(IRandom random, TGeneticItem[] items, int from)
         {
             using var randoms = new Randoms();
-
             Parallel.For(from, items.Length, GetParallelOptions(), (i) =>
             {
-                var r = randoms.GetRandom(i);
+                var r = randoms.GetRandom();
                 var item = CreateItem(r);
                 items[i] = item;
+                randoms.Release(r);
             });
         }
 

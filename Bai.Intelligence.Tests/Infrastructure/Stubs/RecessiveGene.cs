@@ -25,6 +25,11 @@ namespace Bai.Intelligence.Tests.Infrastructure.Stubs
         {
             throw new NotImplementedException();
         }
+
+        public override void Mutate(IRandom random)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class Recessive2Gene: BaseGene
@@ -40,6 +45,11 @@ namespace Bai.Intelligence.Tests.Infrastructure.Stubs
         }
 
         public override void RandomizeValues(IRandom random)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Mutate(IRandom random)
         {
             throw new NotImplementedException();
         }

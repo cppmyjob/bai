@@ -19,5 +19,10 @@ namespace Bai.Intelligence.Organism.Definition.Dna.Genes
         {
             
         }
+
+        public override void Mutate(IRandom random)
+        {
+            
+        }
     }
 }

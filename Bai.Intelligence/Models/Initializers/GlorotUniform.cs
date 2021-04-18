@@ -9,7 +9,9 @@ namespace Bai.Intelligence.Models.Initializers
         public InitializerResult GetValues(int fanIn, int fanOut)
         {
             var count = fanIn * fanOut;
-            var limit = Math.Sqrt(6.0 / (fanIn + fanOut));
+            //var limit = Math.Sqrt(6.0 / (fanIn + fanOut));
+            //var limit = 1000000;
+            var limit = 1;
             var weights = new float[count];
 
             using var random = RandomFactory.Instance.Create();

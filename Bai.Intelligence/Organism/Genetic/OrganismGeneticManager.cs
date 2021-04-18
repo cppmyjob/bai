@@ -19,6 +19,7 @@ namespace Bai.Intelligence.Organism.Genetic
     {
         public NetworkDefinition Definition;
         public double Fitness;
+        public int Iteration;
     }
 
     public class OrganismGeneticManager: GeneticManager<OrganismGeneticItem>
@@ -95,11 +96,11 @@ namespace Bai.Intelligence.Organism.Genetic
 
         protected override OrganismGeneticItem CreateItem(IRandom random)
         {
-            var timeMeter = new TimeMeter(_logger, "CreateTime");
-            timeMeter.Start();
+            //var timeMeter = new TimeMeter(_logger, "CreateTime");
+            //timeMeter.Start();
             var definition = _networkDefinition.Clone();
             definition.RandomizeValues(random);
-            timeMeter.Stop();
+            //timeMeter.Stop();
 
             var result = new OrganismGeneticItem
                          {
@@ -115,14 +116,29 @@ namespace Bai.Intelligence.Organism.Genetic
             var gSurveyI = -1;
             var crossover = new Crossover(random);
 
+            Parallel.For(0, _initData.SurviveNumber, GetParallelOptions(), (i) =>
+            {
+                _men[i].Iteration = _men[i].Iteration + 1;
+                _women[i].Iteration = _women[i].Iteration + 1;
+            });
+
             var newItemsNumber = _initData.ItemsNumber - _initData.SurviveNumber;
             var newMen = new BlockingCollection<OrganismGeneticItem>(newItemsNumber);
             var newWomen = new BlockingCollection<OrganismGeneticItem>(newItemsNumber);
             Parallel.For(0, newItemsNumber, GetParallelOptions(), (i) => {
                 var surveyI = Interlocked.Increment(ref gSurveyI) % _initData.SurviveNumber;
-                var r = randoms.GetRandom(i);
-                ReproducePerson(r, crossover, _men, _women, newMen, surveyI);
-                ReproducePerson(r, crossover, _women, _men, newWomen, surveyI);
+                var r = randoms.GetRandom();
+                if (r.NextDouble() > 0.5)
+                {
+                    ReproducePerson(r, crossover, _men, _women, newMen, surveyI);
+                    ReproducePerson(r, crossover, _women, _men, newWomen, surveyI);
+                }
+                else
+                {
+                    ReproducePerson(r, crossover, _men, _women, newWomen, surveyI);
+                    ReproducePerson(r, crossover, _women, _men, newMen, surveyI);
+                }
+                randoms.Release(r);
             });
             var finalMen = new List<OrganismGeneticItem>(_initData.ItemsNumber);
             finalMen.AddRange(_men.Select(t => t).Take(_initData.SurviveNumber));
@@ -147,9 +163,30 @@ namespace Bai.Intelligence.Organism.Genetic
                 }
             });
 
-            _men = _men.OrderByDescending(t => t.Fitness).ToArray();
-            _women = _women.OrderByDescending(t => t.Fitness).ToArray();
-            _logger.Debug($"Max Accuracy Man:{_men[0].Fitness} Woman:{_women[0].Fitness}");
+            //var menList = _men.Where(t => t.Iteration <= 5).OrderByDescending(t => t.Fitness).ToList();
+            var menList = _men.OrderByDescending(t => t.Fitness).ToList();
+
+            while (menList.Count < _initData.ItemsNumber)
+            {
+                var item = CreateItem(random);
+                menList.Add(item);
+            }
+
+            //var womenList = _women.Where(t => t.Iteration <= 5).OrderByDescending(t => t.Fitness).ToList();
+            var womenList = _women.OrderByDescending(t => t.Fitness).ToList();
+            while (womenList.Count < _initData.ItemsNumber)
+            {
+                var item = CreateItem(random);
+                womenList.Add(item);
+            }
+
+            _men = menList.ToArray();
+            _women = womenList.ToArray();
+
+            for (int i = 0; i < 10; i++)
+            {
+                _logger.Debug($"Max Accuracy Man ({_men[i].Iteration}): {_men[i].Fitness} Woman ({_women[i].Iteration}):{_women[i].Fitness}");
+            }
 
             CreatingPopulation(random, _men, _initData.SurviveNumber);
             CreatingPopulation(random, _women, _initData.SurviveNumber);
@@ -171,6 +208,8 @@ namespace Bai.Intelligence.Organism.Genetic
 
             var newPersonDefinition = crossover.Execute(parent1.Definition, parent2.Definition);
 
+            newPersonDefinition.Mutate(random);
+
             var newPerson = new OrganismGeneticItem
             {
                 Definition = newPersonDefinition,
@@ -181,3 +220,4 @@ namespace Bai.Intelligence.Organism.Genetic
 
     }
 }
+
