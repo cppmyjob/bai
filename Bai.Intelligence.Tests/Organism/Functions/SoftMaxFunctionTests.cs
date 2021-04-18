@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Bai.Intelligence.Organism.Functions;
+﻿using Bai.Intelligence.Organism.Functions;
 using Bai.Intelligence.Tests.Infrastructure;
 using NUnit.Framework;
 
-namespace Bai.Intelligence.Tests.Functions
+namespace Bai.Intelligence.Tests.Organism.Functions
 {
     public class SoftMaxFunctionTests
     {

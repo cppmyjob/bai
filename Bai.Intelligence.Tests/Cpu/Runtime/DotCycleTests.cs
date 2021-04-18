@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Bai.Intelligence.Cpu.Runtime;
 using Bai.Intelligence.Tests.Infrastructure;
 using NUnit.Framework;
 
-namespace Bai.Intelligence.Tests.Cycles
+namespace Bai.Intelligence.Tests.Cpu.Runtime
 {
     public class DotCycleTests
     {

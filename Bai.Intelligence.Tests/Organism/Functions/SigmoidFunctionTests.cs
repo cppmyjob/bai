@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Bai.Intelligence.Organism.Functions;
 using Bai.Intelligence.Tests.Infrastructure;
 using NUnit.Framework;
 
-namespace Bai.Intelligence.Tests.Functions
+namespace Bai.Intelligence.Tests.Organism.Functions
 {
-    public class LinearFunctionTests
+    public class SigmoidFunctionTests
     {
         private TestEnvBase _env;
 
@@ -23,13 +19,14 @@ namespace Bai.Intelligence.Tests.Functions
         public void ShouldCompute()
         {
             // ARRANGE
-            var function = new LinearFunction();
+            var function = new SigmoidFunction {Alfa = 4.4F};
 
             // ACT
             var result = function.Compute(0.5F);
 
             // ASSERT
-            Assert.AreEqual(0.5F, result);
+            var expectValue = (float) (1.0 / (1.0 + Math.Exp(-4.4F * 0.5F)));
+            Assert.AreEqual(expectValue, result);
         }
     }
 }

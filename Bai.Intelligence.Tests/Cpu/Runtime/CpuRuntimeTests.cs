@@ -2,11 +2,10 @@ using System.Linq;
 using Bai.Intelligence.Cpu;
 using Bai.Intelligence.Cpu.Runtime;
 using Bai.Intelligence.Data;
-using Bai.Intelligence.Interfaces;
 using Bai.Intelligence.Tests.Infrastructure;
 using NUnit.Framework;
 
-namespace Bai.Intelligence.Tests.Cpu
+namespace Bai.Intelligence.Tests.Cpu.Runtime
 {
     public class CpuRuntimeTests
     {

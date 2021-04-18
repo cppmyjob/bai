@@ -2,7 +2,7 @@
 using Bai.Intelligence.Tests.Infrastructure;
 using NUnit.Framework;
 
-namespace Bai.Intelligence.Tests.Cycles
+namespace Bai.Intelligence.Tests.Cpu.Runtime
 {
     public class MultiCycleTests
     {
