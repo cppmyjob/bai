@@ -2,5 +2,6 @@
 {
     public interface INeuronFunction
     {
+        FunctionIoType FunctionIoType { get; }
     }
 }

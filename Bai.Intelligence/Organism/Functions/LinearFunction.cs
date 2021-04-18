@@ -6,5 +6,7 @@
         {
             return value;
         }
+
+        public FunctionIoType FunctionIoType => FunctionIoType.OneToOne;
     }
 }

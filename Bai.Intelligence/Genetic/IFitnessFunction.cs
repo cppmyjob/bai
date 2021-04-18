@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using Bai.Intelligence.Data;
+using Bai.Intelligence.Interfaces;
 
 namespace Bai.Intelligence.Genetic
 {
     public interface IFitnessFunction<TGeneticItem>
     {
-        double Calculate(InputDataArray trainX, InputDataArray trainY, TGeneticItem item);
+        double Calculate(ILogger logger, InputDataArray trainX, InputDataArray trainY, TGeneticItem item);
     }
 }

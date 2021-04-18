@@ -18,5 +18,7 @@ namespace Bai.Intelligence.Tests.Infrastructure.Stubs
             InputValues = values;
             return new []{ 55F, 66F };
         }
+
+        public FunctionIoType FunctionIoType => FunctionIoType.ManyToMany;
     }
 }

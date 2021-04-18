@@ -113,6 +113,11 @@ namespace Bai.Intelligence.Models.Layers
                                OutputIndexes = new []{ context.OutputOffset++ },
                                Alfa = 1
                            };
+                case ActivationType.Relu:
+                    return new AddReluFunctionGene 
+                           {
+                                OutputIndexes = new[] { context.OutputOffset++ },
+                           };
                 case ActivationType.Softmax:
                     var outputIndexes = new int[inputs.Count];
                     for (var i = 0; i < outputIndexes.Length; i++)

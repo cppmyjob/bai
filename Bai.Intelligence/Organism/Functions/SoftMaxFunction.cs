@@ -25,5 +25,7 @@ namespace Bai.Intelligence.Organism.Functions
             }
             return result;
         }
+
+        public FunctionIoType FunctionIoType => FunctionIoType.ManyToMany;
     }
 }

@@ -16,12 +16,6 @@ namespace Bai.Intelligence.Cpu
 {
     public class CpuBuilder : IBuilder
     {
-        private class CyclePreviousCycleData
-        {
-            public int[] OutputIndexes;
-            public int NeuronIndex;
-        }
-
         public IRuntime Build(NetworkDefinition definition)
         {
             using var random = RandomFactory.Instance.Create();
@@ -121,11 +115,11 @@ namespace Bai.Intelligence.Cpu
         {
             var cycles = new Dictionary<string, DotCycle>();
 
-            var neuronGroups = neuronInputsOneToOne.GroupBy(t => t.NeuronIndex).ToArray();
+            var neuronGroups = neuronInputsOneToOne.GroupBy(t => t.Neuron.Index);
             foreach (var neuronGroup in neuronGroups)
             {
-                var orderedInputs = neuronGroup.OrderBy(t => t.SourceIndex).ToArray();
-                var sourceIndexes = neuronGroup.Select(t => t.SourceIndex).ToArray();
+                var orderedInputs = neuronGroup.OrderBy(t => t.SourceIndex);
+                var sourceIndexes = orderedInputs.Select(t => t.SourceIndex).ToArray();
 
                 var sourceIndexesKey = string.Join(",", sourceIndexes);
                 if (!cycles.TryGetValue(sourceIndexesKey, out var cycle))
@@ -152,88 +146,78 @@ namespace Bai.Intelligence.Cpu
             return result;
         }
 
-        private (List<CyclePreviousCycleData> OneToOne, List<CyclePreviousCycleData> ManyToMany) SeparateByFunctionType(
-            MultiCycle multiCycle, Dictionary<int, Neuron> neuronDict)
-        {
-            var oneToOne = new List<CyclePreviousCycleData>();
-            var manyToMany = new List<CyclePreviousCycleData>();
-            var groups = multiCycle.Items.GroupBy(t => t.NeuronIndex, item => item);
-            foreach (var group in groups)
-            {
-                var indexes = group.Select(t => t.OutputIndex).ToArray();
-                var data = new CyclePreviousCycleData
-                           {
-                               NeuronIndex = group.Key,
-                               OutputIndexes = indexes
-                           };
-                var function = neuronDict[group.Key].Function;
-                if (function is INeuronFunctionManyToMany)
-                {
-                    manyToMany.Add(data);
-                }
-                else
-                {
-                    oneToOne.Add(data);
-                }
-            }
-            return (oneToOne, manyToMany);
-        }
-
-        private class GetNeuronInputsGroupConsolidated
-        {
-            public int SourceIndex { get; set; }
-            public int NeuronIndex { get; set; }
-            public List<InputItem> InputItems { get; set; }
-        }
-
         private (List<InputItem> OneToOne, List<InputItem> ManyToMany) GetNeuronInputs(
             BuildRuntimeContext buildRuntimeContext, List<MapInput> inputs, Dictionary<int, Neuron> neuronDict)
         {
-            var oneToOne = new List<InputItem>();
-            var manyToMany = new List<InputItem>();
+            List<InputItem> oneToOne = null;
+            List<InputItem> manyToMany = null;
 
-            var groups = inputs.SelectMany(t => t.Inputs).GroupBy(g => new {g.SourceIndex, g.NeuronIndex})
-                .Select(t => new GetNeuronInputsGroupConsolidated
-                             {
-                                 SourceIndex = t.Key.SourceIndex,
-                                 NeuronIndex = t.Key.NeuronIndex,
-                                 InputItems = t.ToList()
-                             });
-
+            var groups = inputs.SelectMany(t => t.Inputs).GroupBy(t => t.Neuron.Function.FunctionIoType);
             foreach (var group in groups)
             {
-                var function = neuronDict[group.NeuronIndex].Function;
-                if (function is INeuronFunctionManyToMany)
+                switch (group.Key)
                 {
-                    manyToMany.AddRange(group.InputItems);
-                }
-                else
-                {
-                    oneToOne.AddRange(group.InputItems);
+                    case FunctionIoType.OneToOne:
+                        oneToOne = group.ToList();
+                        continue;
+                    case FunctionIoType.ManyToMany:
+                        manyToMany = group.ToList();
+                        continue;
+                    default:
+                        throw new NotSupportedException();
                 }
             }
+
+            oneToOne ??= new List<InputItem>(0);
+            manyToMany ??= new List<InputItem>(0);
+
             return (oneToOne, manyToMany);
         }
 
         private static Dictionary<int, MapInput> CreateInputMap(List<Neuron> neurons)
         {
             var map = new Dictionary<int, MapInput>();
-            foreach (var neuron in neurons)
-            foreach (var input in neuron.Inputs)
+            for (var index = 0; index < neurons.Count; index++)
             {
-                if (!map.TryGetValue(input.SourceIndex, out var mapItem))
+                var neuron = neurons[index];
+                for (var i = 0; i < neuron.Inputs.Count; i++)
                 {
-                    mapItem = new MapInput {SourceIndex = input.SourceIndex};
-                    map.Add(input.SourceIndex, mapItem);
-                }
+                    var input = neuron.Inputs[i];
+                    if (!map.TryGetValue(input.SourceIndex, out var mapItem))
+                    {
+                        mapItem = new MapInput { SourceIndex = input.SourceIndex };
+                        map.Add(input.SourceIndex, mapItem);
+                    }
 
-                mapItem.Inputs.Add(new InputItem
-                                   {
-                                       NeuronIndex = neuron.Index,
-                                       SourceIndex = input.SourceIndex,
-                                       Weight = input.Weight
-                                   });
+                    mapItem.Inputs.Add(new InputItem
+                    {
+                        Neuron = neuron,
+                        SourceIndex = input.SourceIndex,
+                        Weight = input.Weight
+                    });
+                }
             }
+
+            //foreach (var neuron in neurons)
+            //{
+            //    var groups = neuron.Inputs.GroupBy(t => t.SourceIndex);
+            //    foreach (var group in groups)
+            //    {
+            //        if (!map.TryGetValue(group.Key, out var mapItem))
+            //        {
+            //            mapItem = new MapInput { SourceIndex = group.Key };
+            //            map.Add(group.Key, mapItem);
+            //        }
+
+            //        var inputs = group.Select(t => new InputItem
+            //        {
+            //            Neuron = neuron,
+            //            SourceIndex = t.SourceIndex,
+            //            Weight = t.Weight
+            //        });
+            //        mapItem.Inputs.AddRange(inputs);
+            //    }
+            //}
 
             return map;
         }
@@ -301,28 +285,10 @@ namespace Bai.Intelligence.Cpu
                            {
                                Weight = input.Weight,
                                SourceIndex = input.SourceIndex,
-                               NeuronIndex = input.NeuronIndex,
+                               NeuronIndex = input.Neuron.Index,
                                OutputIndex = buildRuntimeContext.TempMemoryIndex++
                            };
                 cycle.Items.Add(item);
-            }
-
-            buildRuntimeContext.RuntimeCycles.Add(cycle);
-            return cycle;
-        }
-
-        private SumCycle AddSumCycle(BuildRuntimeContext buildRuntimeContext, List<CyclePreviousCycleData> inputCycleData)
-        {
-            var cycle = new SumCycle(10);
-
-            foreach (var cycleData in inputCycleData)
-            {
-                cycle.Items.Add(new SumCycle.Item
-                {
-                    Indexes = cycleData.OutputIndexes,
-                    NeuronIndex = cycleData.NeuronIndex,
-                    ResultIndex = buildRuntimeContext.TempMemoryIndex++
-                });
             }
 
             buildRuntimeContext.RuntimeCycles.Add(cycle);
@@ -344,22 +310,22 @@ namespace Bai.Intelligence.Cpu
 
         private class InputItem
         {
-            public float Weight { get; set; }
-            public int SourceIndex { get; set; }
-            public bool Processed { get; set; }
-            public int NeuronIndex { get; set; }
+            public float Weight;
+            public int SourceIndex;
+            public bool Processed;
+            public Neuron Neuron;
         }
 
         private class MapInput
         {
-            public int SourceIndex { get; set; }
-            public List<InputItem> Inputs { get; } = new List<InputItem>();
+            public int SourceIndex;
+            public readonly List<InputItem> Inputs = new List<InputItem>();
         }
 
         private class BuildRuntimeContext
         {
-            public List<Cycle> RuntimeCycles { get; set; }
-            public int TempMemoryIndex { get; set; }
+            public List<Cycle> RuntimeCycles;
+            public int TempMemoryIndex;
         }
     }
 }

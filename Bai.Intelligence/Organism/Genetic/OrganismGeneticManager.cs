@@ -9,11 +9,13 @@ using Bai.Intelligence.Data;
 using Bai.Intelligence.Genetic;
 using Bai.Intelligence.Interfaces;
 using Bai.Intelligence.Organism.Definition;
+using Bai.Intelligence.Utils;
+using Bai.Intelligence.Utils.Random;
 
 namespace Bai.Intelligence.Organism.Genetic
 {
 
-    public struct OrganismGeneticItem
+    public class OrganismGeneticItem
     {
         public NetworkDefinition Definition;
         public double Fitness;
@@ -21,6 +23,7 @@ namespace Bai.Intelligence.Organism.Genetic
 
     public class OrganismGeneticManager: GeneticManager<OrganismGeneticItem>
     {
+        private readonly ILogger _logger;
         private readonly GeneticInitData _initData;
         private readonly NetworkDefinition _networkDefinition;
         private readonly IFitnessFunction<NetworkDefinition> _fitnessFunction;
@@ -34,10 +37,11 @@ namespace Bai.Intelligence.Organism.Genetic
         private OrganismGeneticItem[] _men;
         private OrganismGeneticItem[] _women;
 
-        public OrganismGeneticManager(GeneticInitData initData,
+        public OrganismGeneticManager(ILogger logger, GeneticInitData initData,
             NetworkDefinition networkDefinition, DataArray trainX, DataArray trainY,
             IFitnessFunction<NetworkDefinition> fitnessFunction) : base(initData)
         {
+            _logger = logger;
             _initData = initData;
             _networkDefinition = networkDefinition;
             _trainY = trainY;
@@ -91,17 +95,11 @@ namespace Bai.Intelligence.Organism.Genetic
 
         protected override OrganismGeneticItem CreateItem(IRandom random)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            var timeMeter = new TimeMeter(_logger, "CreateTime");
+            timeMeter.Start();
             var definition = _networkDefinition.Clone();
             definition.RandomizeValues(random);
-            stopWatch.Stop();
-            // Get the elapsed time as a TimeSpan value.
-            TimeSpan ts = stopWatch.Elapsed;
-            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-                ts.Hours, ts.Minutes, ts.Seconds,
-                ts.Milliseconds / 10);
-            Console.WriteLine("CreateItem RunTime " + elapsedTime);
+            timeMeter.Stop();
 
             var result = new OrganismGeneticItem
                          {
@@ -113,20 +111,19 @@ namespace Bai.Intelligence.Organism.Genetic
 
         protected override void Reproduction(IRandom random)
         {
+            using var randoms = new Randoms();
             var gSurveyI = -1;
             var crossover = new Crossover(random);
 
             var newItemsNumber = _initData.ItemsNumber - _initData.SurviveNumber;
             var newMen = new BlockingCollection<OrganismGeneticItem>(newItemsNumber);
             var newWomen = new BlockingCollection<OrganismGeneticItem>(newItemsNumber);
-            Parallel.For(0, newItemsNumber,
-                GetParallelOptions(),
-                (i) =>
-                {
-                    var surveyI = Interlocked.Increment(ref gSurveyI) % _initData.SurviveNumber;
-                    ReproducePerson(random, crossover, _men, _women, newMen, surveyI);
-                    ReproducePerson(random, crossover, _women, _men, newWomen, surveyI);
-                });
+            Parallel.For(0, newItemsNumber, GetParallelOptions(), (i) => {
+                var surveyI = Interlocked.Increment(ref gSurveyI) % _initData.SurviveNumber;
+                var r = randoms.GetRandom(i);
+                ReproducePerson(r, crossover, _men, _women, newMen, surveyI);
+                ReproducePerson(r, crossover, _women, _men, newWomen, surveyI);
+            });
             var finalMen = new List<OrganismGeneticItem>(_initData.ItemsNumber);
             finalMen.AddRange(_men.Select(t => t).Take(_initData.SurviveNumber));
             finalMen.AddRange(newMen);
@@ -138,19 +135,31 @@ namespace Bai.Intelligence.Organism.Genetic
             _women = finalWomen.ToArray();
         }
 
-        protected override void Selection()
+        protected override void Selection(IRandom random)
         {
-            Parallel.For(0, _initData.ItemsNumber, GetParallelOptions(), (i) => {
-                CalculateFitness(_men[i]);
-                CalculateFitness(_women[i]);
+            Parallel.For(0, _initData.ItemsNumber * 2, GetParallelOptions(), (i) => {
+                if (i < _initData.ItemsNumber) {
+                    CalculateFitness(_men[i]);
+                }
+                else
+                {
+                    CalculateFitness(_women[i - _initData.ItemsNumber]);
+                }
             });
+
+            _men = _men.OrderByDescending(t => t.Fitness).ToArray();
+            _women = _women.OrderByDescending(t => t.Fitness).ToArray();
+            _logger.Debug($"Max Accuracy Man:{_men[0].Fitness} Woman:{_women[0].Fitness}");
+
+            CreatingPopulation(random, _men, _initData.SurviveNumber);
+            CreatingPopulation(random, _women, _initData.SurviveNumber);
         }
 
         private void CalculateFitness(OrganismGeneticItem person)
         {
             if (person.Fitness < 0.0 || person.Fitness > 0.0)
                 return;
-            person.Fitness = _fitnessFunction.Calculate(_inputTrainX, _inputTrainY, person.Definition);
+            person.Fitness = _fitnessFunction.Calculate(_logger, _inputTrainX, _inputTrainY, person.Definition);
         }
 
         private void ReproducePerson(IRandom random, Crossover crossover, OrganismGeneticItem[] oldParents1, OrganismGeneticItem[] oldParents2,

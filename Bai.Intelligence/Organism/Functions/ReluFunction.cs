@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Bai.Intelligence.Organism.Functions
 {
-    public class SigmoidFunction : INeuronFunctionOneToOne
+    public class ReluFunction: INeuronFunctionOneToOne
     {
-        public float Alfa { get; set; }
         public float Compute(float value)
         {
-            return (float) (1.0 / (1.0 + Math.Exp(-Alfa * value)));
+            return Math.Max(0, value);
         }
 
         public FunctionIoType FunctionIoType => FunctionIoType.OneToOne;

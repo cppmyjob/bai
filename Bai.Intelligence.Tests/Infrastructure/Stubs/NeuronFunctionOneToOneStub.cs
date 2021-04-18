@@ -18,5 +18,7 @@ namespace Bai.Intelligence.Tests.Infrastructure.Stubs
             InputValue = value;
             return 55F;
         }
+
+        public FunctionIoType FunctionIoType => FunctionIoType.OneToOne;
     }
 }
