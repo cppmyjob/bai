@@ -1,6 +1,9 @@
 ﻿using System.Linq;
+using Bai.Intelligence.Cpu;
+using Bai.Intelligence.Data;
 using Bai.Intelligence.Models;
 using Bai.Intelligence.Models.Layers;
+using Bai.Intelligence.Organism.Definition;
 using Bai.Intelligence.Organism.Definition.Dna.Genes;
 using Bai.Intelligence.Organism.Definition.Dna.Genes.Functions;
 using Bai.Intelligence.Tests.Infrastructure;
@@ -42,6 +45,66 @@ namespace Bai.Intelligence.Tests.Models
             var expectedOutputIndexes = new int[] { 6, 7, 8, 9, 10, 4, 5 };
             ShouldCompileCorrectGenesCheckGenes(manGenes, expectedInputIndexes, expectedOutputIndexes);
             ShouldCompileCorrectGenesCheckGenes(womanGenes, expectedInputIndexes, expectedOutputIndexes);
+        }
+
+        [Test]
+        public void ShouldComputeCpuCorrect()
+        {
+
+            // ARRANGE
+            var model = new Sequential();
+            model.Layers.Add(new Dense(3, inputDim: 4, activation: ActivationType.Relu));
+            model.Layers.Add(new Dense(2, activation: ActivationType.Softmax));
+
+            model.Compile(_env.Optimizer);
+            SetWeight(model.NetworkDefinition, 0, 0, 0.1F);
+            SetWeight(model.NetworkDefinition, 0, 1, 0.2F);
+            SetWeight(model.NetworkDefinition, 0, 2, 0.3F);
+            SetWeight(model.NetworkDefinition, 0, 3, 0.4F);
+
+            SetWeight(model.NetworkDefinition, 1, 0, -0.1F);
+            SetWeight(model.NetworkDefinition, 1, 1, -0.2F);
+            SetWeight(model.NetworkDefinition, 1, 2, -0.3F);
+            SetWeight(model.NetworkDefinition, 1, 3, -0.4F);
+
+            SetWeight(model.NetworkDefinition, 2, 0, 0.5F);
+            SetWeight(model.NetworkDefinition, 2, 1, 0.6F);
+            SetWeight(model.NetworkDefinition, 2, 2, 0.7F);
+            SetWeight(model.NetworkDefinition, 2, 3, 0.8F);
+
+
+            SetWeight(model.NetworkDefinition, 3, 0, 3.3F);
+            SetWeight(model.NetworkDefinition, 3, 1, 4.4F);
+            SetWeight(model.NetworkDefinition, 3, 2, 5.5F);
+
+            SetWeight(model.NetworkDefinition, 4, 0, 6.6F);
+            SetWeight(model.NetworkDefinition, 4, 1, 7.7F);
+            SetWeight(model.NetworkDefinition, 4, 2, 8.8F);
+
+
+            SetWeight(model.NetworkDefinition, 5, 0, 0.02F);
+            SetWeight(model.NetworkDefinition, 5, 1, 0.01F);
+
+            // ACT
+            var builder = new CpuBuilder();
+
+            var runtime = builder.Build(model.NetworkDefinition);
+            var memory = new[] { 1F, 2F, 3F, 4F };
+            runtime.SetInputMemory(memory);
+
+            var result = runtime.Compute(new[] {new InputData {Offset = 0, Length = 4}});
+
+            // ASSERT
+            Assert.AreEqual(0.5384240912F, result[0], 0.0000001);
+            Assert.AreEqual(0.4615759088f, result[1], 0.0000001);
+        }
+
+        private void SetWeight(NetworkDefinition definition, int neuronId, int inputId, float weight)
+        {
+            var inputGene = (AddInputsGene) definition.Chromosomes[0].Dna1.Genes[3 * neuronId + 1];
+            inputGene.Inputs[inputId].Weight = weight;
+            inputGene = (AddInputsGene)definition.Chromosomes[0].Dna2.Genes[3 * neuronId + 1];
+            inputGene.Inputs[inputId].Weight = weight;
         }
 
         [Test]
