@@ -28,5 +28,9 @@ namespace Bai.Intelligence.Cpu.Runtime
                 tempMemory[item.TempOutputIndex] = item.Function.Compute(tempMemory[item.InputValueIndex]);
             }
         }
+
+        public override void Dispose()
+        {
+        }
     }
 }

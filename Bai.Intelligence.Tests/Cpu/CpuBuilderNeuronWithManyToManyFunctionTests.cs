@@ -32,7 +32,7 @@ namespace Bai.Intelligence.Tests.Cpu
             var runtime = (CpuRuntime)builder.Build(definition);
 
             // ASSERT
-            Assert.AreEqual(inputOutputCount + 3, runtime.TempMemory.Length);
+            Assert.AreEqual(inputOutputCount + 3, runtime.TempMemoryLength);
         }
 
 

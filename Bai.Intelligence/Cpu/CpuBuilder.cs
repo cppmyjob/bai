@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Bai.Intelligence.Collections;
 using Bai.Intelligence.Cpu.Runtime;
 using Bai.Intelligence.Genetic;
 using Bai.Intelligence.Interfaces;
@@ -11,6 +12,10 @@ using Bai.Intelligence.Organism.Definition.Dna;
 using Bai.Intelligence.Organism.Definition.Dna.Genes;
 using Bai.Intelligence.Organism.Functions;
 using Bai.Intelligence.Utils.Random;
+using MemoryPools;
+using MemoryPools.Collections.Linq;
+using MemoryPools.Collections.Specialized;
+using Microsoft.Extensions.ObjectPool;
 
 namespace Bai.Intelligence.Cpu
 {
@@ -29,7 +34,7 @@ namespace Bai.Intelligence.Cpu
                                       };
             AddCycles(definition, buildRuntimeContext, random);
 
-            runtime.TempMemory = new float[buildRuntimeContext.TempMemoryIndex];
+            runtime.SetTempMemory(buildRuntimeContext.TempMemoryIndex);
 
             return runtime;
         }
@@ -94,8 +99,11 @@ namespace Bai.Intelligence.Cpu
 
                 if (neuronInputs.OneToOne.Count > 0)
                 {
-                    var dotCycles = AddDotCycle(buildRuntimeContext, neuronInputs.OneToOne);
+                    var dotCycles = Pool<List<DotCycle>>.Get();
+                    AddDotCycle(buildRuntimeContext, dotCycles,  neuronInputs.OneToOne);
                     AddFunctionOneToOneCycle(buildRuntimeContext, source, neuronDict, dotCycles);
+                    dotCycles.Clear();
+                    Pool<List<DotCycle>>.Return(dotCycles);
                 }
 
                 if (neuronInputs.ManyToMany.Count > 0)
@@ -111,9 +119,9 @@ namespace Bai.Intelligence.Cpu
             } while (inputMap.Keys.Count > 0);
         }
 
-        private List<DotCycle> AddDotCycle(BuildRuntimeContext buildRuntimeContext, List<InputItem> neuronInputsOneToOne)
+        private void AddDotCycle(BuildRuntimeContext buildRuntimeContext, List<DotCycle> dotCycles, List<InputItem> neuronInputsOneToOne)
         {
-            var cycles = new Dictionary<string, DotCycle>();
+            using var cycles = new PoolingDictionary<string, DotCycle>().Init();
 
             var neuronGroups = neuronInputsOneToOne.GroupBy(t => t.Neuron.Index);
             foreach (var neuronGroup in neuronGroups)
@@ -124,26 +132,16 @@ namespace Bai.Intelligence.Cpu
                 var sourceIndexesKey = string.Join(",", sourceIndexes);
                 if (!cycles.TryGetValue(sourceIndexesKey, out var cycle))
                 {
-                    var inputData = new DotCycle.InputData();
-                    inputData.SourceIndexes = sourceIndexes;
-                    // TODO add capacity
-                    inputData.DotProducts = new List<DotCycle.DotProduct>();
-                    cycle = new DotCycle(inputData);
+                    cycle = new DotCycle(sourceIndexes);
                     cycles.Add(sourceIndexesKey, cycle);
+                    dotCycles.Add(cycle);
                 }
 
-                cycle.Inputs.DotProducts.Add(new DotCycle.DotProduct
-                    {
-                        NeuronIndex = neuronGroup.Key,
-                        OutputIndex = buildRuntimeContext.TempMemoryIndex++,
-                        Weights = orderedInputs.Select(t => t.Weight).ToArray()
-                    });
-
+                cycle.Inputs.AddProduct(neuronGroup.Key, buildRuntimeContext.TempMemoryIndex++, 
+                    orderedInputs.Select(t => t.Weight).ToArray());
             }
 
-            var result = cycles.Values.ToList();
-            buildRuntimeContext.RuntimeCycles.AddRange(result);
-            return result;
+            buildRuntimeContext.RuntimeCycles.AddRange(dotCycles);
         }
 
         private (List<InputItem> OneToOne, List<InputItem> ManyToMany) GetNeuronInputs(
@@ -241,10 +239,21 @@ namespace Bai.Intelligence.Cpu
         private void AddFunctionOneToOneCycle(BuildRuntimeContext buildRuntimeContext, List<int> source,
             Dictionary<int, Neuron> neuronDict, List<DotCycle> dotCycles)
         {
-            var dotProducts = dotCycles.SelectMany(t => t.Inputs.DotProducts).ToList();
-            var cycle = new FunctionOneToOneCycle(dotProducts.Count);
-            foreach (var dotProduct in dotProducts)
+            var dotProducts = Pool<PList<DotCycle.DotProduct>>.Get().Init();
+
+            foreach (var dotCycle in dotCycles)
             {
+                for (var i = 0; i < dotCycle.Inputs.DotProducts.Count; i++)
+                {
+                    dotProducts.Add(dotCycle.Inputs.DotProducts[i]);
+                }
+            }
+
+            var cycle = new FunctionOneToOneCycle(dotProducts.Count);
+
+            for (int i = 0; i < dotProducts.Count; i++)
+            {
+                var dotProduct = dotProducts[i];
                 var neuron = neuronDict[dotProduct.NeuronIndex];
                 var outputIndex = neuron.Outputs[0];
                 cycle.Items.Add(new FunctionOneToOneCycle.Item {
@@ -255,6 +264,8 @@ namespace Bai.Intelligence.Cpu
                 source.Add(outputIndex);
             }
             buildRuntimeContext.RuntimeCycles.Add(cycle);
+
+            Pool<PList<DotCycle.DotProduct>>.Return(dotProducts);
         }
 
         private void AddFunctionManyToManyCycle(BuildRuntimeContext buildRuntimeContext, List<int> source, 
@@ -324,7 +335,7 @@ namespace Bai.Intelligence.Cpu
 
         private class BuildRuntimeContext
         {
-            public List<Cycle> RuntimeCycles;
+            public PoolingList<Cycle> RuntimeCycles;
             public int TempMemoryIndex;
         }
     }

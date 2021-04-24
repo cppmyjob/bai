@@ -25,7 +25,6 @@ namespace MnistSimple
 
             var builder = new CpuBuilder();
             var runtime = builder.Build(network.Network);
-            runtime.SetInputMemory(network.TrainX.Data);
 
 
             Stopwatch stopWatch = new Stopwatch();
@@ -38,7 +37,7 @@ namespace MnistSimple
             {
                 inputData[0].Length = network.TrainX.FrameLength;
                 inputData[0].Offset = i;
-                var result = runtime.Compute(inputData);
+                var result = runtime.Compute(network.TrainX.Data, inputData);
                 //var predictIndex = GetMaxIndex(result, 0, result.Length);
                 //var expectedIndex = GetMaxIndex(trainY.Data, j, trainY.FrameLength);
                 //meanSum += predictIndex == expectedIndex ? 1 : 0;

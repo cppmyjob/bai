@@ -12,5 +12,11 @@
                 SourceIndex = SourceIndex
             };
         }
+
+        public void CopyTo(NeuronInput value)
+        {
+            value.Weight = Weight;
+            value.SourceIndex = SourceIndex;
+        }
     }
 }

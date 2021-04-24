@@ -30,6 +30,11 @@ namespace Bai.Intelligence.Tests.Infrastructure.Stubs
         {
             throw new NotImplementedException();
         }
+
+        public override void CopyTo(BaseGene value)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class Dominant2Gene : BaseGene
@@ -50,6 +55,11 @@ namespace Bai.Intelligence.Tests.Infrastructure.Stubs
         }
 
         public override void Mutate(IRandom random)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void CopyTo(BaseGene value)
         {
             throw new NotImplementedException();
         }

@@ -21,11 +21,8 @@ namespace Bai.Intelligence.Organism.Genetic
 
             var timeMeter1 = new TimeMeter(logger, "Build");
             timeMeter1.Start();
-            var runtime = builder.Build(item);
+            using var runtime = builder.Build(item);
             timeMeter1.Stop();
-
-            runtime.SetInputMemory(trainX.Data);
-
 
             var timeMeter2 = new TimeMeter(logger, "Calculate");
             timeMeter2.Start();
@@ -37,7 +34,7 @@ namespace Bai.Intelligence.Organism.Genetic
             {
                 inputData[0].Length = trainX.FrameLength;
                 inputData[0].Offset = i;
-                var runtimeResult = runtime.Compute(inputData);
+                var runtimeResult = runtime.Compute(trainX.Data, inputData);
                 var predictIndex = GetMaxIndex(runtimeResult, 0, runtimeResult.Length);
                 var expectedIndex = GetMaxIndex(trainY.Data, j, trainY.FrameLength);
                 meanSum += predictIndex == expectedIndex ? 1 : 0;
@@ -50,7 +47,7 @@ namespace Bai.Intelligence.Organism.Genetic
             return result;
         }
 
-        private int GetMaxIndex(float[] values, int offset, int length)
+        private int GetMaxIndex(ReadOnlySpan<float> values, int offset, int length)
         {
             var max = float.MinValue;
             var maxIndex = -1; 

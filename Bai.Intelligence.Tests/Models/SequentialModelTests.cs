@@ -90,9 +90,8 @@ namespace Bai.Intelligence.Tests.Models
 
             var runtime = builder.Build(model.NetworkDefinition);
             var memory = new[] { 1F, 2F, 3F, 4F };
-            runtime.SetInputMemory(memory);
 
-            var result = runtime.Compute(new[] {new InputData {Offset = 0, Length = 4}});
+            var result = runtime.Compute(memory, new[] {new InputData {Offset = 0, Length = 4}});
 
             // ASSERT
             Assert.AreEqual(0.5384240912F, result[0], 0.0000001);

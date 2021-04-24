@@ -32,5 +32,9 @@ namespace Bai.Intelligence.Cpu.Runtime
                 tempMemory[item.OutputIndex] = item.Weight * tempMemory[item.SourceIndex];
             }
         }
+
+        public override void Dispose()
+        {
+        }
     }
 }

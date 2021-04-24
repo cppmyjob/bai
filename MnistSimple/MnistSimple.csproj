@@ -9,4 +9,9 @@
     <ProjectReference Include="..\Bai.Intelligence.DataSets\Bai.Intelligence.DataSets.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MemoryPools" Version="1.1.3.2" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="5.0.5" />
+  </ItemGroup>
+
 </Project>

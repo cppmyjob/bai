@@ -32,19 +32,18 @@ namespace Bai.Intelligence.Genetic
 
         protected abstract void InitPopulation(IRandom random);
 
-        protected virtual void CreatingPopulation(IRandom random, TGeneticItem[] items, int from)
+        protected virtual void CreatingPopulation(IRandom random, List<TGeneticItem> items, int from)
         {
             using var randoms = new Randoms();
-            Parallel.For(from, items.Length, GetParallelOptions(), (i) =>
+            Parallel.For(from, items.Count, GetParallelOptions(), (i) =>
             {
                 var r = randoms.GetRandom();
-                var item = CreateItem(r);
-                items[i] = item;
+                items[i] = CreateItem(items[i], r);
                 randoms.Release(r);
             });
         }
 
-        protected abstract TGeneticItem CreateItem(IRandom random);
+        protected abstract TGeneticItem CreateItem(TGeneticItem diedItem, IRandom random);
 
         protected abstract void Reproduction(IRandom random);
         protected abstract void Selection(IRandom random);

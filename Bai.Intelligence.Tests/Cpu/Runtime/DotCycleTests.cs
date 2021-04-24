@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Bai.Intelligence.Collections;
 using Bai.Intelligence.Cpu.Runtime;
 using Bai.Intelligence.Tests.Infrastructure;
+using MemoryPools.Collections.Linq;
 using NUnit.Framework;
 
 namespace Bai.Intelligence.Tests.Cpu.Runtime
@@ -23,19 +25,15 @@ namespace Bai.Intelligence.Tests.Cpu.Runtime
         {
             // ARRANGE
 
-            var cycle = new DotCycle(
-            new DotCycle.InputData
-                           {
-                               SourceIndexes = new [] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
-                               DotProducts = new List<DotCycle.DotProduct>()
-                                             {
-                                                 new DotCycle.DotProduct
-                                                 {
-                                                     Weights = new [] {0.1F, 0.2F, 0.3F, 0.4F, 0.5F, 0.6F, 0.7F, 0.8F, 0.9F, 1.0F, 1.1F},
-                                                     OutputIndex = 11
-                                                 }
-                                             }
-                           });
+            var cycle = new DotCycle(new[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+            cycle.Inputs.DotProducts.Add(
+                        new DotCycle.DotProduct
+                        {
+                            Weights = new[] { 0.1F, 0.2F, 0.3F, 0.4F, 0.5F, 0.6F, 0.7F, 0.8F, 0.9F, 1.0F, 1.1F },
+                            OutputIndex = 11
+                        }
+            );
+
 
             // ACT
             var tempArray = new float[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0};
@@ -65,23 +63,21 @@ namespace Bai.Intelligence.Tests.Cpu.Runtime
 
             var cycle1InputCount = 28 * 28;
             var cycle1NeuronCount = 800;
-            var cycle1 = new DotCycle(
-                new DotCycle.InputData
-                {
-                    SourceIndexes = Enumerable.Range(0, cycle1InputCount).ToArray(),
-                    DotProducts = CreateDotProducts(cycle1InputCount, cycle1NeuronCount)
-                });
-
+            var cycle1 = new DotCycle(Enumerable.Range(0, cycle1InputCount).ToArray());
+            var list1 = CreateDotProducts(cycle1InputCount, cycle1NeuronCount);
+            for (var i = 0; i < list1.Count; i++)
+            {
+                cycle1.Inputs.DotProducts.Add(list1[i]);
+            }
 
             var cycle2InputCount = 800;
             var cycle2NeuronCount = 10;
-            var cycle2 = new DotCycle(
-                new DotCycle.InputData
-                {
-                    SourceIndexes = Enumerable.Range(0, cycle2InputCount).ToArray(),
-                    DotProducts = CreateDotProducts(cycle2InputCount, cycle2NeuronCount)
-                });
-
+            var cycle2 = new DotCycle(Enumerable.Range(0, cycle2InputCount).ToArray());
+            var list2 = CreateDotProducts(cycle2InputCount, cycle2NeuronCount);
+            for (var i = 0; i < list2.Count; i++)
+            {
+                cycle2.Inputs.DotProducts.Add(list2[i]);
+            }
 
             // ACT
             var tempArray = new float[10000];

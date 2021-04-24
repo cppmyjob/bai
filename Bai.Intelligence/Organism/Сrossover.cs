@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Bai.Intelligence.Interfaces;
 using Bai.Intelligence.Organism.Definition;
 using Bai.Intelligence.Organism.Definition.Dna;
@@ -14,6 +15,31 @@ namespace Bai.Intelligence.Organism
         {
             _random = random;
         }
+
+        public void Execute(NetworkDefinition parent1, NetworkDefinition parent2, NetworkDefinition blank)
+        {
+            blank.InputCount = parent1.InputCount;
+            blank.OutputCount = parent1.OutputCount;
+
+            if (parent1.Chromosomes.Count != blank.Chromosomes.Count)
+                throw new Exception("Crossover::Execute different Chromosomes count");
+
+
+            for (var i = 0; i < parent1.Chromosomes.Count; i++)
+            {
+                SetNewDna(parent1.Chromosomes[i], parent2.Chromosomes[i],
+                    blank.Chromosomes[i]);
+            }
+        }
+
+        private void SetNewDna(Chromosome parent1Chromosome, Chromosome parent2Chromosome, Chromosome blank)
+        {
+            var parent1Dna = GetRandomBool() ? parent1Chromosome.Dna1 : parent1Chromosome.Dna2;
+            var parent2Dna = GetRandomBool() ? parent2Chromosome.Dna1 : parent2Chromosome.Dna2;
+            parent1Dna.CopyTo(blank.Dna1);
+            parent2Dna.CopyTo(blank.Dna2);
+        }
+
 
         public NetworkDefinition Execute(NetworkDefinition parent1, NetworkDefinition parent2)
         {

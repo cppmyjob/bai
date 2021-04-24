@@ -24,5 +24,10 @@ namespace Bai.Intelligence.Organism.Definition.Dna.Genes
         {
             
         }
+
+        public override void CopyTo(BaseGene value)
+        {
+            
+        }
     }
 }

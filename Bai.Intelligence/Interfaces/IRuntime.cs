@@ -6,9 +6,8 @@ using Bai.Intelligence.Data;
 namespace Bai.Intelligence.Interfaces
 {
 
-    public interface IRuntime
+    public interface IRuntime : IDisposable
     {
-        void SetInputMemory(float[] inputMemory);
-        float[] Compute(InputData[] inputs);
+        ReadOnlySpan<float> Compute(float[] inputMemory, InputData[] inputs);
     }
 }

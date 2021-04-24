@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Bai.Intelligence.Cpu;
 using Bai.Intelligence.Interfaces;
@@ -51,6 +52,19 @@ namespace Bai.Intelligence.Organism.Definition.Dna.Genes
             }
         }
 
+        public override void CopyTo(BaseGene value)
+        {
+            var blankValue = (AddInputsGene) value;
+            blankValue.InitMaxWeight = InitMaxWeight;
+            blankValue.InitMinWeight = InitMinWeight;
 
+            if (Inputs.Count != blankValue.Inputs.Count)
+                throw new Exception("AddInputsGene::CopyTo different Inputs count");
+
+            for (int i = 0; i < Inputs.Count; i++)
+            {
+                Inputs[i].CopyTo(blankValue.Inputs[i]);
+            }
+        }
     }
 }

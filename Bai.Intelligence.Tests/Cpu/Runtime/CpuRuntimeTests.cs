@@ -17,30 +17,6 @@ namespace Bai.Intelligence.Tests.Cpu.Runtime
         }
 
         [Test]
-        public void ShouldSetCorrectInputValues()
-        {
-            // ARRANGE
-            var definition = _env.CreateSimpleNeuron();
-            var builder = new CpuBuilder();
-            var runtime = (CpuRuntime)builder.Build(definition);
-            var memory = new[] { 10F, 20F, 30F };
-            runtime.SetInputMemory(memory);
-
-            // ACT
-            var input = new InputData
-            {
-                Offset = 0,
-                Length = memory.Length
-            };
-            var result = runtime.Compute(new[] { input });
-
-            // ASSERT
-            Assert.AreEqual(10F, runtime.TempMemory[0]);
-            Assert.AreEqual(20F, runtime.TempMemory[1]);
-            Assert.AreEqual(30F, runtime.TempMemory[2]);
-        }
-
-        [Test]
         public void ShouldCalculateSimpleNeuron()
         {
             // ARRANGE
@@ -48,7 +24,6 @@ namespace Bai.Intelligence.Tests.Cpu.Runtime
             var builder = new CpuBuilder();
             var runtime = (CpuRuntime)builder.Build(definition);
             var memory = new[] { 1F, 2F, 3F };
-            runtime.SetInputMemory(memory);
 
             // ACT
             var input = new InputData
@@ -56,7 +31,7 @@ namespace Bai.Intelligence.Tests.Cpu.Runtime
                 Offset = 0,
                 Length = memory.Length
             };
-            var result = runtime.Compute(new[] { input });
+            var result = runtime.Compute(memory, new[] { input });
 
             // ASSERT
             Assert.AreEqual(1, result.Length);
@@ -72,7 +47,6 @@ namespace Bai.Intelligence.Tests.Cpu.Runtime
             var builder = new CpuBuilder();
             var runtime = (CpuRuntime)builder.Build(definition);
             var memory = new[] { 1F, 2F, 3F };
-            runtime.SetInputMemory(memory);
 
             // ACT
             var input = new InputData
@@ -80,7 +54,7 @@ namespace Bai.Intelligence.Tests.Cpu.Runtime
                             Offset = 0,
                             Length = memory.Length
                         };
-            var result = runtime.Compute(new[] { input });
+            var result = runtime.Compute(memory, new[] { input });
 
             // ASSERT
             Assert.AreEqual(1, result.Length);
@@ -96,7 +70,6 @@ namespace Bai.Intelligence.Tests.Cpu.Runtime
             var builder = new CpuBuilder();
             var runtime = (CpuRuntime)builder.Build(definition);
             var memory = new[] { 1F, 2F, 3F };
-            runtime.SetInputMemory(memory);
 
             // ACT
             var input = new InputData
@@ -104,7 +77,7 @@ namespace Bai.Intelligence.Tests.Cpu.Runtime
                             Offset = 0,
                             Length = memory.Length
                         };
-            var result = runtime.Compute(new[] { input });
+            var result = runtime.Compute(memory, new[] { input });
 
             // ASSERT
             Assert.AreEqual(3, result.Length);
@@ -112,7 +85,7 @@ namespace Bai.Intelligence.Tests.Cpu.Runtime
             Assert.AreEqual(0.0117020626F, result[0]);
             Assert.AreEqual(0.953143001F, result[1]);
             Assert.AreEqual(0.0351549424F, result[2]);
-            Assert.AreEqual(1, result.Sum(), 0.000001);
+            Assert.AreEqual(1, result.ToArray().Sum(), 0.000001);
         }
     }
 }

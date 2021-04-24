@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Numerics;
+using Bai.Intelligence.Collections;
+using MemoryPools;
+using MemoryPools.Collections.Specialized;
 
 namespace Bai.Intelligence.Cpu.Runtime
 {
@@ -11,29 +15,66 @@ namespace Bai.Intelligence.Cpu.Runtime
 
         public class DotProduct
         {
-            public float[] Weights;
-            public int OutputIndex;
             public int NeuronIndex;
+            public int OutputIndex;
+            public float[] Weights;
+
+            public DotProduct Init(int neuronIndex, int outputIndex, float[] weights)
+            {
+                NeuronIndex = neuronIndex;
+                OutputIndex = outputIndex;
+                Weights = weights;
+                return this;
+            }
         }
 
-        public class InputData
+        public class InputData : IDisposable
         {
             public int[] SourceIndexes;
-            public List<DotProduct> DotProducts;
+            public PList<DotProduct> DotProducts;
+
+            public InputData()
+            {
+                DotProducts = Pool<PList<DotProduct>>.Get().Init();
+            }
+
+            public void AddProduct(int neuronIndex, int outputIndex, float[] weights)
+            {
+                var product = Pool<DotProduct>.Get().Init(neuronIndex, outputIndex, weights);
+                DotProducts.Add(product);
+            }
+
+            public void Dispose()
+            {
+                if (DotProducts != null)
+                {
+                    for (var i = 0; i < DotProducts.Count; i++)
+                    {
+                        Pool<DotProduct>.Return(DotProducts[i]);
+                        DotProducts[i] = default;
+                    }
+                    DotProducts.Dispose();
+                    Pool<PList<DotProduct>>.Return(DotProducts);
+                    DotProducts = default;
+                }
+            }
         }
 
-        public DotCycle(InputData inputs)
+        public DotCycle(int[] sourceIndexes)
         {
-            Inputs = inputs;
+            Inputs = new DotCycle.InputData
+                     {
+                         SourceIndexes = sourceIndexes, 
+                     };
         }
 
-        public InputData Inputs { get; }
+        public InputData Inputs { get; private set; }
 
 
         public override void Compute(float[] tempMemory)
         {
             var inputCount = Inputs.SourceIndexes.Length;
-            var inputData = new float[inputCount];
+            Span<float> inputData = stackalloc float[inputCount];
 
             for (int i = 0; i < inputCount; i++)
             {
@@ -62,7 +103,7 @@ namespace Bai.Intelligence.Cpu.Runtime
                 var weights = product.Weights;
                 for (var j = 0; j < vectorOperationsLength; j += vecSize)
                 {
-                    var va = new Vector<float>(inputData, j);
+                    var va = new Vector<float>(inputData.Slice(j, vecSize));
                     var vb = new Vector<float>(weights, j);
                     vsum += va * vb;
                 }
@@ -85,10 +126,16 @@ namespace Bai.Intelligence.Cpu.Runtime
             }
         }
 
+        public override void Dispose()
+        {
+            Inputs?.Dispose();
+            Inputs = default;
+        }
+
         private void ComputeNative(float[] tempMemory)
         {
             var inputCount = Inputs.SourceIndexes.Length;
-            var inputData = new float[inputCount];
+            Span<float> inputData = stackalloc float[inputCount];
 
             for (int i = 0; i < inputCount; i++)
             {

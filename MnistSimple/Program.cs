@@ -1,5 +1,6 @@
 ﻿using Bai.Intelligence.DataSets;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
@@ -10,13 +11,38 @@ using Bai.Intelligence.Models;
 using Bai.Intelligence.Models.Layers;
 using Bai.Intelligence.Models.Optimizers;
 using Bai.Intelligence.Utils.Random;
+using MemoryPools;
 
 namespace MnistSimple
 {
+
+    public class Test<T>
+    {
+        public Test() => Init();
+
+        public Test<T> Init()
+        {
+            Console.WriteLine("Init");
+            return this;
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
         {
+            //var list = Pool<List<int>>.Get();
+            //Console.WriteLine(list.Count);
+            //list.Add(2);
+            //Console.WriteLine(list.Count);
+            //Pool<List<int>>.Return(list);
+
+            //list = Pool<List<int>>.Get();
+            //Console.WriteLine(list.Count);
+
+            //var list = Pool<Test<int>>.Get().Init();
+
+
             //ImprovePerformance.Execute();
             ModelLearning();
 

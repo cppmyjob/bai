@@ -36,5 +36,9 @@ namespace Bai.Intelligence.Cpu.Runtime
                 tempMemory[item.ResultIndex] = (float)sum;
             }
         }
+
+        public override void Dispose()
+        {
+        }
     }
 }

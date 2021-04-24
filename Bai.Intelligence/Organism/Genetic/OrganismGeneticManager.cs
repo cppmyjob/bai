@@ -20,6 +20,19 @@ namespace Bai.Intelligence.Organism.Genetic
         public NetworkDefinition Definition;
         public double Fitness;
         public int Iteration;
+        public bool Died;
+
+        public void Die()
+        {
+            Died = true;
+        }
+
+        public void Born()
+        {
+            Fitness = 0;
+            Iteration = 0;
+            Died = false;
+        }
     }
 
     public class OrganismGeneticManager: GeneticManager<OrganismGeneticItem>
@@ -35,8 +48,8 @@ namespace Bai.Intelligence.Organism.Genetic
 
 
         // TODO use List
-        private OrganismGeneticItem[] _men;
-        private OrganismGeneticItem[] _women;
+        private List<OrganismGeneticItem> _men;
+        private List<OrganismGeneticItem> _women;
 
         public OrganismGeneticManager(ILogger logger, GeneticInitData initData,
             NetworkDefinition networkDefinition, DataArray trainX, DataArray trainY,
@@ -50,8 +63,8 @@ namespace Bai.Intelligence.Organism.Genetic
             _trainX = trainX;
         }
 
-        public OrganismGeneticItem[] Men => _men;
-        public OrganismGeneticItem[] Women => _women;
+        public List<OrganismGeneticItem> Men => _men;
+        public List<OrganismGeneticItem> Women => _women;
 
         public override void Execute()
         {
@@ -75,39 +88,56 @@ namespace Bai.Intelligence.Organism.Genetic
 
         protected override void InitPopulation(IRandom random)
         {
-            _men = new OrganismGeneticItem[_initData.ItemsNumber];
-            _women = new OrganismGeneticItem[_initData.ItemsNumber];
+            _men = new List<OrganismGeneticItem>(_initData.ItemsNumber);
+            _women = new List<OrganismGeneticItem>(_initData.ItemsNumber);
+
+            for (var i = 0; i < _initData.ItemsNumber; i++)
+            {
+                _men.Add(null);
+                _women.Add(null);
+            }
+
             if (_initData.Men != null)
             {
-                Array.Copy(_initData.Men, _men, _initData.Men.Length);
-                CreatingPopulation(random, _men, _initData.Men.Length);
+                throw new NotImplementedException();
+                //Array.Copy(_initData.Men, _men, _initData.Men.Length);
+                //CreatingPopulation(random, _men, _initData.Men.Length);
             }
             else
                 CreatingPopulation(random, _men, 0);
 
             if (_initData.Women != null)
             {
-                Array.Copy(_initData.Women, _women, _initData.Women.Length);
-                CreatingPopulation(random, _women, _initData.Women.Length);
+                throw new NotImplementedException();
+                //Array.Copy(_initData.Women, _women, _initData.Women.Length);
+                //CreatingPopulation(random, _women, _initData.Women.Length);
             }
             else
                 CreatingPopulation(random, _women, 0);
         }
 
-        protected override OrganismGeneticItem CreateItem(IRandom random)
+        protected override OrganismGeneticItem CreateItem(OrganismGeneticItem diedItem, IRandom random)
         {
-            //var timeMeter = new TimeMeter(_logger, "CreateTime");
-            //timeMeter.Start();
-            var definition = _networkDefinition.Clone();
-            definition.RandomizeValues(random);
-            //timeMeter.Stop();
-
-            var result = new OrganismGeneticItem
-                         {
-                             Definition = definition,
-                             Fitness = 0
-                         };
-            return result;
+            if (diedItem == null)
+            {
+                var timeMeter = new TimeMeter(_logger, "CreateTime");
+                timeMeter.Start();
+                var definition = _networkDefinition.Clone();
+                definition.RandomizeValues(random);
+                timeMeter.Stop();
+                var result = new OrganismGeneticItem
+                             {
+                                 Definition = definition,
+                                 Fitness = 0
+                             };
+                return result;
+            }
+            else
+            {
+                //diedItem.Born();
+                diedItem.Definition.RandomizeValues(random);
+                return diedItem;
+            }
         }
 
         protected override void Reproduction(IRandom random)
@@ -122,33 +152,22 @@ namespace Bai.Intelligence.Organism.Genetic
                 _women[i].Iteration = _women[i].Iteration + 1;
             });
 
-            var newItemsNumber = _initData.ItemsNumber - _initData.SurviveNumber;
-            var newMen = new BlockingCollection<OrganismGeneticItem>(newItemsNumber);
-            var newWomen = new BlockingCollection<OrganismGeneticItem>(newItemsNumber);
-            Parallel.For(0, newItemsNumber, GetParallelOptions(), (i) => {
+            Parallel.For(_initData.SurviveNumber, _initData.ItemsNumber, GetParallelOptions(), (i) =>
+            {
                 var surveyI = Interlocked.Increment(ref gSurveyI) % _initData.SurviveNumber;
                 var r = randoms.GetRandom();
                 if (r.NextDouble() > 0.5)
                 {
-                    ReproducePerson(r, crossover, _men, _women, newMen, surveyI);
-                    ReproducePerson(r, crossover, _women, _men, newWomen, surveyI);
+                    ReproducePerson(r, crossover, _men, _women, _men[i], surveyI);
+                    ReproducePerson(r, crossover, _women, _men, _women[i], surveyI);
                 }
                 else
                 {
-                    ReproducePerson(r, crossover, _men, _women, newWomen, surveyI);
-                    ReproducePerson(r, crossover, _women, _men, newMen, surveyI);
+                    ReproducePerson(r, crossover, _men, _women, _women[i], surveyI);
+                    ReproducePerson(r, crossover, _women, _men, _men[i], surveyI);
                 }
                 randoms.Release(r);
             });
-            var finalMen = new List<OrganismGeneticItem>(_initData.ItemsNumber);
-            finalMen.AddRange(_men.Select(t => t).Take(_initData.SurviveNumber));
-            finalMen.AddRange(newMen);
-            _men = finalMen.ToArray();
-            
-            var finalWomen = new List<OrganismGeneticItem>(_initData.ItemsNumber);
-            finalWomen.AddRange(_women.Select(t => t).Take(_initData.SurviveNumber));
-            finalWomen.AddRange(newWomen);
-            _women = finalWomen.ToArray();
         }
 
         protected override void Selection(IRandom random)
@@ -163,33 +182,29 @@ namespace Bai.Intelligence.Organism.Genetic
                 }
             });
 
-            //var menList = _men.Where(t => t.Iteration <= 5).OrderByDescending(t => t.Fitness).ToList();
-            var menList = _men.OrderByDescending(t => t.Fitness).ToList();
 
-            while (menList.Count < _initData.ItemsNumber)
-            {
-                var item = CreateItem(random);
-                menList.Add(item);
-            }
-
-            //var womenList = _women.Where(t => t.Iteration <= 5).OrderByDescending(t => t.Fitness).ToList();
-            var womenList = _women.OrderByDescending(t => t.Fitness).ToList();
-            while (womenList.Count < _initData.ItemsNumber)
-            {
-                var item = CreateItem(random);
-                womenList.Add(item);
-            }
-
-            _men = menList.ToArray();
-            _women = womenList.ToArray();
+            _men.Sort((a, b) => b.Fitness.CompareTo(a.Fitness));
+            _women.Sort((a, b) => b.Fitness.CompareTo(a.Fitness));
 
             for (int i = 0; i < 10; i++)
             {
                 _logger.Debug($"Max Accuracy Man ({_men[i].Iteration}): {_men[i].Fitness} Woman ({_women[i].Iteration}):{_women[i].Fitness}");
             }
 
+            DieItems(_men, _initData.SurviveNumber);
+            DieItems(_women, _initData.SurviveNumber);
+
             CreatingPopulation(random, _men, _initData.SurviveNumber);
             CreatingPopulation(random, _women, _initData.SurviveNumber);
+        }
+
+
+        private void DieItems(List<OrganismGeneticItem> items, int from)
+        {
+            Parallel.For(from, items.Count, GetParallelOptions(), (i) =>
+            {
+                items[i].Die();
+            });
         }
 
         private void CalculateFitness(OrganismGeneticItem person)
@@ -199,23 +214,18 @@ namespace Bai.Intelligence.Organism.Genetic
             person.Fitness = _fitnessFunction.Calculate(_logger, _inputTrainX, _inputTrainY, person.Definition);
         }
 
-        private void ReproducePerson(IRandom random, Crossover crossover, OrganismGeneticItem[] oldParents1, OrganismGeneticItem[] oldParents2,
-            BlockingCollection<OrganismGeneticItem> newPeople, int surveyIndex)
+        private void ReproducePerson(IRandom random, Crossover crossover, List<OrganismGeneticItem> oldParents1, List<OrganismGeneticItem> oldParents2,
+            OrganismGeneticItem blank, int surveyIndex)
         {
             var parent1 = oldParents1[surveyIndex];
             var parent2Index = random.Next(_initData.ItemsNumber);
             var parent2 = oldParents2[parent2Index];
 
-            var newPersonDefinition = crossover.Execute(parent1.Definition, parent2.Definition);
+            crossover.Execute(parent1.Definition, parent2.Definition, blank.Definition);
 
-            newPersonDefinition.Mutate(random);
+            blank.Definition.Mutate(random);
 
-            var newPerson = new OrganismGeneticItem
-            {
-                Definition = newPersonDefinition,
-                Fitness = 0
-            };
-            newPeople.Add(newPerson);
+            blank.Born();
         }
 
     }

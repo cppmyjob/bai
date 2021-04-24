@@ -34,5 +34,11 @@ namespace Bai.Intelligence.Organism.Definition.Dna.Genes.Functions
         {
             // TODO for Outputs
         }
+
+        public override void CopyTo(BaseGene value)
+        {
+            base.CopyTo(value);
+            ((AddSigmoidFunctionGene) value).Alfa = Alfa;
+        }
     }
 }

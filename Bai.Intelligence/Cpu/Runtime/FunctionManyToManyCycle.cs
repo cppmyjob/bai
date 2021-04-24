@@ -39,5 +39,9 @@ namespace Bai.Intelligence.Cpu.Runtime
                 }
             }
         }
+
+        public override void Dispose()
+        {
+        }
     }
 }
