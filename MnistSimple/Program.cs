@@ -55,7 +55,7 @@ namespace MnistSimple
             var data = FashionMnist.LoadData();
             var trainX = new DataArray(784);
 
-            var trainExamples = 1000;
+            var trainExamples = 10;
 
             var x = data.Train.X.Take(trainExamples);
             trainX.AddRange(x);

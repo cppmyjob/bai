@@ -28,9 +28,9 @@ namespace Bai.Intelligence.Organism.Genetic
             timeMeter2.Start();
 
             var inputData = new[] {new InputData()};
-            int i, j;
+            int i, j, allCount;
             var meanSum = 0;
-            for (i = 0, j = 0; i < trainX.Data.Length; i += trainX.FrameLength, j += trainY.FrameLength)
+            for (i = 0, j = 0, allCount = 0; i < trainX.Data.Length; i += trainX.FrameLength, j += trainY.FrameLength, ++allCount)
             {
                 inputData[0].Length = trainX.FrameLength;
                 inputData[0].Offset = i;
@@ -40,7 +40,7 @@ namespace Bai.Intelligence.Organism.Genetic
                 meanSum += predictIndex == expectedIndex ? 1 : 0;
             }
 
-            var allCount = trainX.Data.Length / trainX.FrameLength;
+            // var allCount = trainX.Data.Length / trainX.FrameLength;
             var result = (float)meanSum / allCount;
             timeMeter2.Stop($"Fitness:{result}");
 
