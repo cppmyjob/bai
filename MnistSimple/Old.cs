@@ -115,9 +115,9 @@ namespace MnistSimple
     //        }
     //    }
 
-    //    public static int ReverseBytes(int v)
+    //    public static int  ReverseBytes(int v)
     //    {
-    //        byte[] intAsBytes = BitConverter.GetBytes(v);
+    //        byte[] intAsBytes1 = BitConverter.GetBytes(v);
     //        Array.Reverse(intAsBytes);
     //        return BitConverter.ToInt32(intAsBytes, 0);
     //    }
